@@ -10,7 +10,7 @@ The project implements a Smart Patient Summary Generator: an AI agent called ins
 
 Idea link: https://community.intersystems.com/post/intersystems-programming-contest-ai-agents-fhir
 
-## Planned FHIR Resources
+## FHIR Resources Used
 
 - Patient
 - Condition
@@ -24,8 +24,8 @@ Idea link: https://community.intersystems.com/post/intersystems-programming-cont
 1. A user selects or provides a `patient_id`.
 2. The app queries FHIR R4 resources from InterSystems IRIS for Health FHIR Server.
 3. A Python layer extracts and normalises relevant clinical context.
-4. An LLM-powered summarisation agent generates a structured patient snapshot.
-5. The app returns a summary with source FHIR resources used.
+4. The app can render a deterministic Markdown summary, build an LLM-ready prompt, or call an OpenAI-compatible LLM provider.
+5. The output includes the source FHIR resources used so generated content can be verified.
 
 ## Summary Output
 
@@ -47,8 +47,20 @@ This project is for demonstration purposes only. It does not provide diagnosis, 
 - InterSystems IRIS for Health / FHIR Server
 - Python
 - FHIR R4
-- LLM-based summarisation
+- Nebius Token Factory / OpenAI-compatible chat completions
 - Docker
+
+## Current Features
+
+- FHIR R4 client with Basic Auth support
+- Local `.env` loading without external dependencies
+- Patient snapshot resource fetch across Patient, Condition, MedicationRequest, AllergyIntolerance, Observation, and Encounter
+- FHIR Bundle extraction and clinical context normalisation
+- Deterministic Markdown summary mode
+- LLM-ready prompt mode
+- Nebius/OpenAI-compatible LLM summary mode
+- Unit tests for normalisation and LLM response parsing
+- Sample LLM output for Patient `1`
 
 ## Repository Structure
 
@@ -74,9 +86,17 @@ This project is for demonstration purposes only. It does not provide diagnosis, 
 
 ## Local FHIR Server Setup
 
-Day 1 setup uses the InterSystems community FHIR template as the reference starting point:
+The local FHIR server setup uses the InterSystems community FHIR template as the reference starting point:
 
 https://github.com/intersystems-community/iris-fhir-template
+
+Clone and run that template separately:
+
+```powershell
+git clone https://github.com/intersystems-community/iris-fhir-template.git iris-challenge-ai-agent
+cd iris-challenge-ai-agent
+docker compose up --build
+```
 
 The project currently expects this FHIR base URL:
 
@@ -91,10 +111,33 @@ The local template also requires Basic Auth:
 ```text
 FHIR_USERNAME=_SYSTEM
 FHIR_PASSWORD=SYS
+```
+
+The local InterSystems template exposes the FHIR port through Docker. Check `docker ps` and use the host port mapped to container port `52773`. In our first local run this was `32783`.
+
+Verify the local FHIR API:
+
+```bash
+curl -i -u _SYSTEM:SYS http://localhost:32783/fhir/r4/metadata
+curl -s -u _SYSTEM:SYS http://localhost:32783/fhir/r4/Patient | python3 -m json.tool
+curl -s -u _SYSTEM:SYS http://localhost:32783/fhir/r4/Condition | python3 -m json.tool
+curl -s -u _SYSTEM:SYS http://localhost:32783/fhir/r4/Observation | python3 -m json.tool
+```
+
+## Configuration
+
+Create a local `.env` file:
+
+```text
+FHIR_BASE_URL=http://localhost:32783/fhir/r4
+FHIR_USERNAME=_SYSTEM
+FHIR_PASSWORD=SYS
 LLM_BASE_URL=https://api.tokenfactory.nebius.com/v1
 LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct
-LLM_API_KEY=
+LLM_API_KEY=your-nebius-token
 ```
+
+Local `.env` files are loaded automatically and are ignored by Git.
 
 ## Python Setup
 
@@ -112,50 +155,35 @@ py -m venv .venv
 pip install -r requirements.txt
 ```
 
-The intended local verification commands are:
+## Run
+
+Run a deterministic patient snapshot:
 
 ```bash
-docker compose up --build
-curl -i -u _SYSTEM:SYS http://localhost:32783/fhir/r4/metadata
-curl -s -u _SYSTEM:SYS http://localhost:32783/fhir/r4/Patient | python3 -m json.tool
-curl -s -u _SYSTEM:SYS http://localhost:32783/fhir/r4/Condition | python3 -m json.tool
-curl -s -u _SYSTEM:SYS http://localhost:32783/fhir/r4/Observation | python3 -m json.tool
-```
-
-Run the local Python snapshot demo:
-
-```bash
-FHIR_BASE_URL=http://localhost:32783/fhir/r4 \
-FHIR_USERNAME=_SYSTEM \
-FHIR_PASSWORD=SYS \
 python -m app.snapshot_demo 1
 ```
 
-Local `.env` files are loaded automatically and are ignored by Git.
-
-Generate an LLM-ready prompt instead of the deterministic demo summary:
+Generate an LLM-ready prompt:
 
 ```powershell
 python -m app.snapshot_demo 1 --format prompt
 ```
 
-Generate a summary with an OpenAI-compatible LLM provider. The default configuration targets Nebius Token Factory:
+Generate a summary with Nebius Token Factory or another OpenAI-compatible provider:
 
 ```powershell
-$env:LLM_BASE_URL='https://api.tokenfactory.nebius.com/v1'
-$env:LLM_MODEL='meta-llama/Llama-3.3-70B-Instruct'
-$env:LLM_API_KEY='your-nebius-token'
 python -m app.snapshot_demo 1 --format llm
 ```
 
-On Windows PowerShell:
+Return only resource counts:
 
 ```powershell
-$env:FHIR_BASE_URL='http://localhost:32783/fhir/r4'
-$env:FHIR_USERNAME='_SYSTEM'
-$env:FHIR_PASSWORD='SYS'
-python -m app.snapshot_demo 1
+python -m app.snapshot_demo 1 --format counts
 ```
+
+Sample output: `docs/sample_patient_1_llm_summary.md`
+
+## Tests
 
 Run tests:
 
@@ -165,21 +193,19 @@ python -m unittest
 
 ## Status
 
-Day 1 baseline in progress:
+Working prototype:
 
-- Project structure created
-- FHIR server setup notes drafted
-- Python FHIR client scaffolded
-- CLI smoke test added
-- Deterministic patient snapshot renderer added
-- Normalizer unit test added
-- Provider-neutral LLM prompt builder added
-- Nebius/OpenAI-compatible LLM provider added
+- Local InterSystems IRIS for Health FHIR Server verified
+- Patient `1` verified with 5 conditions, 2 medication requests, 0 allergy records, 88 observations, and 14 encounters
+- Deterministic summary mode works
+- LLM prompt mode works
+- Nebius Token Factory LLM summary mode works
+- Tests pass
 
-## Next Steps
+## Roadmap
 
-1. Add or adapt Docker configuration for an InterSystems IRIS for Health FHIR Server.
-2. Verify the local FHIR base URL at `http://localhost:32783/fhir/r4`.
-3. Run `python -m app.snapshot_demo <patient_id>` against the local FHIR server.
-4. Add tests and sample output for Patient `1`.
-5. Add an LLM summarisation layer with explicit safety framing.
+1. Add a small web UI for patient ID entry and summary display.
+2. Improve observation grouping for vitals, labs, and survey observations.
+3. Add more tests with saved FHIR fixture bundles.
+4. Add a short architecture diagram and demo script.
+5. Decide whether to embed Docker/FHIR setup in this repo or keep the InterSystems template as an external setup step.
