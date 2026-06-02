@@ -27,6 +27,26 @@ Idea link: https://community.intersystems.com/post/intersystems-programming-cont
 4. The app can render a deterministic Markdown summary, build an LLM-ready prompt, or call an OpenAI-compatible LLM provider.
 5. The output includes the source FHIR resources used so generated content can be verified.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    user["User / CLI"] --> cli["snapshot_demo.py"]
+    cli --> agent["PatientSnapshotAgent"]
+    agent --> client["FHIR client"]
+    client --> iris["InterSystems IRIS for Health\nFHIR R4 Server"]
+    iris --> resources["Patient, Condition,\nMedicationRequest, AllergyIntolerance,\nObservation, Encounter"]
+    resources --> normalizer["FHIR normalizer"]
+    normalizer --> context["PatientSnapshotContext"]
+    context --> deterministic["Deterministic Markdown renderer"]
+    context --> prompt["LLM prompt builder"]
+    prompt --> llm["Nebius Token Factory\nOpenAI-compatible chat completions"]
+    deterministic --> output["Patient snapshot summary\nwith source resource IDs"]
+    llm --> output
+```
+
+IRIS for Health is the FHIR interoperability layer in this project. The Python agent does not read local files or query a database directly; it retrieves standards-based FHIR R4 JSON from IRIS and uses those resources as the source of truth for summarisation.
+
 ## Summary Output
 
 - Patient overview
@@ -77,6 +97,7 @@ This project is for demonstration purposes only. It does not provide diagnosis, 
 |   +-- test_normalizer.py
 +-- docs/
 |   +-- day1_fhir_setup.md
+|   +-- demo_script.md
 |   +-- sample_patient_1_llm_summary.md
 +-- .env.example
 +-- .gitignore
@@ -112,8 +133,6 @@ The local template also requires Basic Auth:
 FHIR_USERNAME=_SYSTEM
 FHIR_PASSWORD=SYS
 ```
-
-The local InterSystems template exposes the FHIR port through Docker. Check `docker ps` and use the host port mapped to container port `52773`. In our first local run this was `32783`.
 
 Verify the local FHIR API:
 
@@ -183,6 +202,8 @@ python -m app.snapshot_demo 1 --format counts
 
 Sample output: `docs/sample_patient_1_llm_summary.md`
 
+Demo walkthrough: `docs/demo_script.md`
+
 ## Tests
 
 Run tests:
@@ -207,5 +228,5 @@ Working prototype:
 1. Add a small web UI for patient ID entry and summary display.
 2. Improve observation grouping for vitals, labs, and survey observations.
 3. Add more tests with saved FHIR fixture bundles.
-4. Add a short architecture diagram and demo script.
+4. Add screenshots or a short recorded video demo.
 5. Decide whether to embed Docker/FHIR setup in this repo or keep the InterSystems template as an external setup step.
