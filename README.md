@@ -54,13 +54,15 @@ IRIS for Health is the FHIR interoperability layer in this project. The Python a
 - Medications
 - Allergies
 - Recent observations and labs
-- Red flags or follow-up points
+- Source-data verification points
 - Missing information
 - Source FHIR resources used
 
 ## Safety Note
 
 This project is for demonstration purposes only. It does not provide diagnosis, treatment recommendations, or clinical decision-making. All generated summaries must be verified against the source FHIR data.
+
+The LLM prompt explicitly prohibits care plans, monitoring recommendations, medication changes, referrals, and treatment follow-up instructions. Potential concerns are framed as source-data verification points only.
 
 ## Tech Stack
 
