@@ -1,0 +1,103 @@
+"""Tests for FHIR resource normalization."""
+
+from __future__ import annotations
+
+import unittest
+
+from app.normalizer import normalize_snapshot
+from app.prompt_builder import build_snapshot_prompt
+
+
+class NormalizeSnapshotTest(unittest.TestCase):
+    def test_normalizes_patient_snapshot(self) -> None:
+        raw = {
+            "patient": {
+                "resourceType": "Patient",
+                "id": "1",
+                "name": [{"given": ["Carroll471"], "family": "O'Hara248"}],
+                "gender": "male",
+                "birthDate": "1954-06-13",
+            },
+            "conditions": {
+                "resourceType": "Bundle",
+                "entry": [
+                    {
+                        "resource": {
+                            "resourceType": "Condition",
+                            "id": "13",
+                            "clinicalStatus": {"coding": [{"code": "active"}]},
+                            "verificationStatus": {"coding": [{"code": "confirmed"}]},
+                            "code": {"text": "Body mass index 30+ - obesity (finding)"},
+                            "onsetDateTime": "1991-09-01T15:32:17+00:00",
+                        }
+                    }
+                ],
+            },
+            "medications": {
+                "resourceType": "Bundle",
+                "entry": [
+                    {
+                        "resource": {
+                            "resourceType": "MedicationRequest",
+                            "id": "288",
+                            "status": "stopped",
+                            "intent": "order",
+                            "medicationCodeableConcept": {
+                                "text": "Acetaminophen 325 MG Oral Tablet"
+                            },
+                            "authoredOn": "2015-12-16T15:32:17+00:00",
+                            "dosageInstruction": [{"asNeededBoolean": True}],
+                        }
+                    }
+                ],
+            },
+            "allergies": {"resourceType": "Bundle", "entry": []},
+            "observations": {
+                "resourceType": "Bundle",
+                "entry": [
+                    {
+                        "resource": {
+                            "resourceType": "Observation",
+                            "id": "555",
+                            "category": [{"coding": [{"code": "vital-signs"}]}],
+                            "code": {"text": "Body Mass Index"},
+                            "effectiveDateTime": "2019-09-08T15:32:17+00:00",
+                            "valueQuantity": {"value": 30.35, "unit": "kg/m2"},
+                        }
+                    }
+                ],
+            },
+            "encounters": {"resourceType": "Bundle", "entry": []},
+        }
+
+        context = normalize_snapshot(raw)
+
+        self.assertEqual(context.patient.name, "Carroll471 O'Hara248")
+        self.assertEqual(context.active_conditions[0].name, "Body mass index 30+ - obesity (finding)")
+        self.assertEqual(context.medications[0].name, "Acetaminophen 325 MG Oral Tablet")
+        self.assertEqual(context.recent_observations[0].value, "30.35 kg/m2")
+        self.assertIn("No allergy intolerance records were found.", context.missing_information)
+
+    def test_builds_prompt_with_safety_constraints(self) -> None:
+        raw = {
+            "patient": {
+                "resourceType": "Patient",
+                "id": "1",
+                "name": [{"given": ["Carroll471"], "family": "O'Hara248"}],
+            },
+            "conditions": {"resourceType": "Bundle", "entry": []},
+            "medications": {"resourceType": "Bundle", "entry": []},
+            "allergies": {"resourceType": "Bundle", "entry": []},
+            "observations": {"resourceType": "Bundle", "entry": []},
+            "encounters": {"resourceType": "Bundle", "entry": []},
+        }
+
+        prompt = build_snapshot_prompt(normalize_snapshot(raw))
+
+        self.assertIn("does not diagnose", prompt)
+        self.assertIn("Source FHIR resources", prompt)
+        self.assertIn("Patient/1", prompt)
+
+
+if __name__ == "__main__":
+    unittest.main()
