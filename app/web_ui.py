@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Literal
 
 import streamlit as st
@@ -98,7 +99,12 @@ def main() -> None:
         st.code(result.output, language="markdown")
     else:
         st.subheader("Patient Snapshot")
-        st.markdown(result.output)
+        st.markdown(_without_source_resources_section(result.output))
+
+    if mode != "prompt":
+        with st.expander(f"Source FHIR resources used ({len(result.context.source_resources)})"):
+            for source in result.context.source_resources:
+                st.write(f"- {source.resource_type}/{source.resource_id}")
 
 
 def _render_landing_state() -> None:
@@ -133,6 +139,14 @@ def _agent_mode(mode_label: str) -> UiMode:
     if mode_label == "LLM prompt preview":
         return "prompt"
     return "deterministic"
+
+
+def _without_source_resources_section(markdown: str) -> str:
+    return re.sub(
+        r"(?ims)^\s{0,3}(?:#+\s*)?Source FHIR Resources Used\b.*\Z",
+        "",
+        markdown,
+    ).rstrip()
 
 
 if __name__ == "__main__":

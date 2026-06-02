@@ -57,7 +57,7 @@ IRIS for Health is the FHIR interoperability layer in this project. The Python a
 - Recent observations and labs
 - Care plans
 - Role-specific summary framing
-- Source-data verification points
+- Source-data checks
 - Missing information
 - Source FHIR resources used
 
@@ -65,7 +65,7 @@ IRIS for Health is the FHIR interoperability layer in this project. The Python a
 
 This project is for demonstration purposes only. It does not provide diagnosis, treatment recommendations, or clinical decision-making. All generated summaries must be verified against the source FHIR data.
 
-The LLM prompt explicitly prohibits creating new care plans, monitoring recommendations, medication changes, referrals, and treatment follow-up instructions. Existing FHIR CarePlan resources may be summarised as source data. Potential concerns are framed as source-data verification points only.
+The LLM prompt explicitly prohibits creating new care plans, monitoring recommendations, medication changes, referrals, and treatment follow-up instructions. Existing FHIR CarePlan resources may be summarised as source data. Potential concerns are framed as neutral source-data checks only.
 
 The Missing Information section is constrained to items identified by the deterministic normalizer, which reduces the risk of the model inventing extra clinical gaps.
 
@@ -88,7 +88,7 @@ The Missing Information section is constrained to items identified by the determ
 - LLM-ready prompt mode
 - Nebius/OpenAI-compatible LLM summary mode
 - Role-specific prompt sections for clinicians, ED doctors, care managers, patients, and family caregivers
-- Streamlit web UI for patient ID entry and summary display
+- Streamlit web UI for patient ID entry, summary display, and collapsible source-resource review
 - Unit tests for normalisation and LLM response parsing
 - Sample LLM output for Patient `1`
 

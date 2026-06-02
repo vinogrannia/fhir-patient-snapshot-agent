@@ -7,6 +7,7 @@ import unittest
 from app.llm_provider import extract_chat_completion_text
 from app.normalizer import normalize_snapshot
 from app.prompt_builder import build_snapshot_prompt
+from app.web_ui import _without_source_resources_section
 
 
 class NormalizeSnapshotTest(unittest.TestCase):
@@ -119,7 +120,10 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("Target audience: patient", prompt)
         self.assertIn("Write in plain language for the patient", prompt)
         self.assertIn("Your snapshot", prompt)
+        self.assertIn("Source-data notes", prompt)
+        self.assertIn("Do not use imperative verbs", prompt)
         self.assertIn("Do not invent additional missing information", prompt)
+        self.assertIn("Every explicitly mentioned FHIR resource ID must appear", prompt)
         self.assertIn("only include items listed under 'Missing information identified by deterministic normalizer'", prompt)
         self.assertIn("Recent vital-sign observations", prompt)
         self.assertIn("Care plans", prompt)
@@ -146,6 +150,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("Target audience: ed_doctor", prompt)
         self.assertIn("Immediate orientation", prompt)
         self.assertIn("Medication/allergy verification", prompt)
+        self.assertIn("Source-data checks", prompt)
         self.assertIn("Keep it terse and scan-friendly", prompt)
 
     def test_extracts_chat_completion_text(self) -> None:
@@ -161,6 +166,27 @@ class NormalizeSnapshotTest(unittest.TestCase):
         }
 
         self.assertEqual(extract_chat_completion_text(payload), "Clinical summary text")
+
+    def test_removes_source_section_from_ui_summary(self) -> None:
+        summary = "\n".join(
+            [
+                "Patient Snapshot",
+                "",
+                "Immediate Orientation",
+                "Source data shows one active condition.",
+                "",
+                "Source FHIR Resources Used",
+                "",
+                "Patient/1",
+                "Condition/13",
+            ]
+        )
+
+        visible_summary = _without_source_resources_section(summary)
+
+        self.assertIn("Immediate Orientation", visible_summary)
+        self.assertNotIn("Source FHIR Resources Used", visible_summary)
+        self.assertNotIn("Condition/13", visible_summary)
 
 
 if __name__ == "__main__":
