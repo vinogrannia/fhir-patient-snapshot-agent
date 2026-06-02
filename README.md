@@ -141,7 +141,10 @@ The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary au
 |   +-- demo_script.md
 |   +-- sample_patient_1_llm_summary.md
 |   +-- screenshots/
-|       +-- README.md
+    |   +-- README.md
+    |   +-- streamlit_ed_summary_top.png
+    |   +-- streamlit_ed_summary_middle.png
+    |   +-- streamlit_ed_summary_bottom.png
 +-- .env.example
 +-- .gitignore
 +-- README.md
@@ -286,5 +289,5 @@ Working prototype:
 ## Roadmap
 
 1. Add more tests with saved FHIR fixture bundles.
-2. Add screenshots or a short recorded video demo.
+2. Add a short recorded video demo.
 3. Decide whether to embed Docker/FHIR setup in this repo or keep the InterSystems template as an external setup step.
