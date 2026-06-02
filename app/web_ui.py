@@ -15,6 +15,15 @@ from app.normalizer import PatientSnapshotContext
 UiMode = Literal["deterministic", "prompt", "llm"]
 
 
+AUDIENCE_LABELS = {
+    "Clinician": "clinician",
+    "ED doctor": "ed_doctor",
+    "Care manager": "care_manager",
+    "Patient": "patient",
+    "Family caregiver": "family_caregiver",
+}
+
+
 def main() -> None:
     st.set_page_config(
         page_title="FHIR Patient Snapshot Agent",
@@ -36,6 +45,11 @@ def main() -> None:
             ],
             index=0,
         )
+        audience_label = st.selectbox(
+            "LLM summary audience",
+            options=list(AUDIENCE_LABELS),
+            index=0,
+        )
         generate = st.button("Generate Snapshot", type="primary", use_container_width=True)
 
         st.divider()
@@ -54,11 +68,12 @@ def main() -> None:
         return
 
     mode = _agent_mode(mode_label)
+    audience = AUDIENCE_LABELS[audience_label]
 
     try:
         with st.spinner("Fetching FHIR resources and generating snapshot..."):
             agent = PatientSnapshotAgent(FhirClient.from_env())
-            result = agent.run(patient_id.strip(), mode=mode)
+            result = agent.run(patient_id.strip(), mode=mode, audience=audience)
     except FhirClientError as exc:
         st.error("FHIR request failed.")
         st.code(str(exc), language="text")
@@ -69,6 +84,8 @@ def main() -> None:
         return
 
     _render_context_metrics(result.context)
+    if mode in {"prompt", "llm"}:
+        st.caption(f"LLM summary audience: {audience_label}")
     st.info(
         "Summary for demonstration only. Verify all generated content against the listed "
         "FHIR resources before any clinical use."

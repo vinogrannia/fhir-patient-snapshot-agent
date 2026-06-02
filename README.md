@@ -36,7 +36,7 @@ flowchart LR
     cli --> agent["PatientSnapshotAgent"]
     agent --> client["FHIR client"]
     client --> iris["InterSystems IRIS for Health\nFHIR R4 Server"]
-    iris --> resources["Patient, Condition,\nMedicationRequest, AllergyIntolerance,\nObservation, Encounter"]
+    iris --> resources["Patient, Condition,\nMedicationRequest, AllergyIntolerance,\nObservation, Encounter, CarePlan"]
     resources --> normalizer["FHIR normalizer"]
     normalizer --> context["PatientSnapshotContext"]
     context --> deterministic["Deterministic Markdown renderer"]
@@ -55,6 +55,8 @@ IRIS for Health is the FHIR interoperability layer in this project. The Python a
 - Medications
 - Allergies
 - Recent observations and labs
+- Care plans
+- Role-specific summary framing
 - Source-data verification points
 - Missing information
 - Source FHIR resources used
@@ -63,7 +65,7 @@ IRIS for Health is the FHIR interoperability layer in this project. The Python a
 
 This project is for demonstration purposes only. It does not provide diagnosis, treatment recommendations, or clinical decision-making. All generated summaries must be verified against the source FHIR data.
 
-The LLM prompt explicitly prohibits care plans, monitoring recommendations, medication changes, referrals, and treatment follow-up instructions. Potential concerns are framed as source-data verification points only.
+The LLM prompt explicitly prohibits creating new care plans, monitoring recommendations, medication changes, referrals, and treatment follow-up instructions. Existing FHIR CarePlan resources may be summarised as source data. Potential concerns are framed as source-data verification points only.
 
 ## Tech Stack
 
@@ -83,6 +85,7 @@ The LLM prompt explicitly prohibits care plans, monitoring recommendations, medi
 - Deterministic Markdown summary mode
 - LLM-ready prompt mode
 - Nebius/OpenAI-compatible LLM summary mode
+- Role-specific prompt framing for clinicians, ED doctors, care managers, patients, and family caregivers
 - Streamlit web UI for patient ID entry and summary display
 - Unit tests for normalisation and LLM response parsing
 - Sample LLM output for Patient `1`
@@ -194,11 +197,19 @@ Generate an LLM-ready prompt:
 python -m app.snapshot_demo 1 --format prompt
 ```
 
+Generate a role-specific prompt:
+
+```powershell
+python -m app.snapshot_demo 1 --format prompt --audience patient
+```
+
 Generate a summary with Nebius Token Factory or another OpenAI-compatible provider:
 
 ```powershell
 python -m app.snapshot_demo 1 --format llm
 ```
+
+Supported audiences: `clinician`, `ed_doctor`, `care_manager`, `patient`, and `family_caregiver`.
 
 Return only resource counts:
 
@@ -234,6 +245,7 @@ Working prototype:
 - Deterministic summary mode works
 - LLM prompt mode works
 - Nebius Token Factory LLM summary mode works
+- Role-specific summary framing works in CLI and Streamlit UI
 - Streamlit web UI is available
 - Tests pass
 

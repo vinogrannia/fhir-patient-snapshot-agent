@@ -9,6 +9,9 @@ from app.agent import PatientSnapshotAgent
 from app.fhir_client import FhirClient, bundle_entries
 
 
+AUDIENCE_CHOICES = ["clinician", "ed_doctor", "care_manager", "patient", "family_caregiver"]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Fetch FHIR resources for one patient.")
     parser.add_argument("patient_id", help="FHIR Patient resource ID")
@@ -17,6 +20,12 @@ def main() -> None:
         choices=["counts", "markdown", "prompt", "llm"],
         default="markdown",
         help="Output format for the fetched patient snapshot.",
+    )
+    parser.add_argument(
+        "--audience",
+        choices=AUDIENCE_CHOICES,
+        default="clinician",
+        help="Target audience for prompt and LLM summary modes.",
     )
     args = parser.parse_args()
 
@@ -29,7 +38,7 @@ def main() -> None:
             mode = "llm"
         else:
             mode = "deterministic"
-        result = agent.run(args.patient_id, mode=mode)
+        result = agent.run(args.patient_id, mode=mode, audience=args.audience)
         if result.system_instructions and args.format == "prompt":
             print("# System Instructions")
             print()

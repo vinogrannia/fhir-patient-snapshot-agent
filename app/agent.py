@@ -13,12 +13,14 @@ from app.summary_renderer import render_markdown_summary
 
 
 AgentMode = Literal["deterministic", "prompt", "llm"]
+SnapshotAudience = Literal["clinician", "ed_doctor", "care_manager", "patient", "family_caregiver"]
 
 
 @dataclass(frozen=True)
 class AgentResult:
     patient_id: str
     mode: AgentMode
+    audience: SnapshotAudience
     context: PatientSnapshotContext
     output: str
     system_instructions: str | None = None
@@ -35,18 +37,23 @@ class PatientSnapshotAgent:
         self.fhir_client = fhir_client
         self.llm_provider = llm_provider
 
-    def run(self, patient_id: str, mode: AgentMode = "deterministic") -> AgentResult:
+    def run(
+        self,
+        patient_id: str,
+        mode: AgentMode = "deterministic",
+        audience: SnapshotAudience = "clinician",
+    ) -> AgentResult:
         raw_resources = self.fhir_client.get_patient_snapshot_resources(patient_id)
         context = normalize_snapshot(raw_resources)
 
         if mode == "prompt":
-            output = build_snapshot_prompt(context)
+            output = build_snapshot_prompt(context, audience=audience)
             system_instructions = SYSTEM_INSTRUCTIONS
         elif mode == "llm":
             provider = self.llm_provider or OpenAICompatibleChatProvider.from_env()
             output = provider.generate(
                 system_instructions=SYSTEM_INSTRUCTIONS,
-                user_prompt=build_snapshot_prompt(context),
+                user_prompt=build_snapshot_prompt(context, audience=audience),
             )
             system_instructions = SYSTEM_INSTRUCTIONS
         else:
@@ -56,6 +63,7 @@ class PatientSnapshotAgent:
         return AgentResult(
             patient_id=patient_id,
             mode=mode,
+            audience=audience,
             context=context,
             output=output,
             system_instructions=system_instructions,

@@ -112,10 +112,12 @@ class NormalizeSnapshotTest(unittest.TestCase):
             "care_plans": {"resourceType": "Bundle", "entry": []},
         }
 
-        prompt = build_snapshot_prompt(normalize_snapshot(raw))
+        prompt = build_snapshot_prompt(normalize_snapshot(raw), audience="patient")
 
         self.assertIn("does not diagnose", prompt)
         self.assertIn("Do not recommend monitoring", prompt)
+        self.assertIn("Target audience: patient", prompt)
+        self.assertIn("Write in plain language for the patient", prompt)
         self.assertIn("Recent vital-sign observations", prompt)
         self.assertIn("Care plans", prompt)
         self.assertIn("Source FHIR resources", prompt)

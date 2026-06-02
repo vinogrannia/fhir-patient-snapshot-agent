@@ -72,12 +72,13 @@ Explain:
 ## 5. Show the LLM Prompt
 
 ```powershell
-python -m app.snapshot_demo 1 --format prompt
+python -m app.snapshot_demo 1 --format prompt --audience ed_doctor
 ```
 
 Explain:
 
 - The app builds a safety-framed prompt from normalised FHIR data.
+- The prompt can be adapted for a target audience such as clinician, ED doctor, care manager, patient, or family caregiver.
 - The prompt instructs the model not to diagnose, recommend treatment, or infer facts not present in the source data.
 - The prompt includes source FHIR resource IDs for verification.
 
@@ -94,14 +95,14 @@ LLM_API_KEY=...
 Run:
 
 ```powershell
-python -m app.snapshot_demo 1 --format llm
+python -m app.snapshot_demo 1 --format llm --audience patient
 ```
 
 Explain:
 
 - The app calls Nebius Token Factory through an OpenAI-compatible chat completions API.
 - The generated summary is grounded in FHIR resources retrieved from IRIS.
-- The output includes patient overview, active problems, medications, allergies, recent observations, red flags, missing information, and source resources used.
+- The output includes patient overview, active problems, medications, allergies, recent observations, care plans, source-data verification points, missing information, and source resources used.
 
 ## 7. Show the Web UI
 
@@ -121,6 +122,7 @@ Explain:
 
 - The web UI provides a simple patient ID input.
 - The user can choose deterministic summary, LLM summary, or LLM prompt preview.
+- The user can select a summary audience.
 - The result panel shows the generated patient snapshot.
 - The source resource expander lists the FHIR resources used for verification.
 

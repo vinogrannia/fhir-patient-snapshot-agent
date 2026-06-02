@@ -6,21 +6,47 @@ from app.normalizer import PatientSnapshotContext
 from app.summary_renderer import SAFETY_NOTE
 
 
+AUDIENCE_INSTRUCTIONS = {
+    "clinician": "Write for a clinician who needs a concise cross-resource patient snapshot.",
+    "ed_doctor": (
+        "Write for an emergency department doctor who needs rapid orientation to source-data "
+        "problems, medications, allergies, recent encounters, and recent observations."
+    ),
+    "care_manager": (
+        "Write for a care manager who needs source-data context around active problems, care "
+        "plans, recent utilisation, missing information, and verification points."
+    ),
+    "patient": (
+        "Write in plain language for the patient. Keep medical terms when they come from the "
+        "source data, but briefly clarify them without adding advice."
+    ),
+    "family_caregiver": (
+        "Write in plain language for a family caregiver. Focus on what the source data says, "
+        "what is missing, and what is marked for source-data verification."
+    ),
+}
+
+
 SYSTEM_INSTRUCTIONS = """You are a clinical summarisation assistant.
 Your task is to summarise provided FHIR source data only.
 Do not diagnose, recommend treatment, or infer facts not present in the source context.
-Do not write clinical advice, care plans, monitoring recommendations, or treatment follow-up instructions.
+Do not write clinical advice, new care plans, monitoring recommendations, or treatment follow-up instructions.
 If the source data contains possible concerns, describe them as source-data verification points only.
 When information is missing, say that it is missing.
 Always include a source resource list so the output can be verified."""
 
 
-def build_snapshot_prompt(context: PatientSnapshotContext) -> str:
+def build_snapshot_prompt(context: PatientSnapshotContext, audience: str = "clinician") -> str:
     """Build the user prompt that can be sent to an LLM summarisation provider."""
+
+    audience_instruction = AUDIENCE_INSTRUCTIONS.get(audience, AUDIENCE_INSTRUCTIONS["clinician"])
 
     return "\n".join(
         [
             "Create a concise FHIR patient snapshot using only the source context below.",
+            "",
+            f"Target audience: {audience}",
+            audience_instruction,
             "",
             SAFETY_NOTE,
             "",
@@ -37,8 +63,10 @@ def build_snapshot_prompt(context: PatientSnapshotContext) -> str:
             "",
             "Rules:",
             "- Do not recommend monitoring, treatment, medication changes, referrals, or follow-up actions.",
+            "- Do not create new care plans; only summarise CarePlan resources present in the source context.",
             "- Do not say that a condition requires action unless the source data explicitly says so.",
             "- Use wording such as 'source data shows' or 'verify in source data' instead of clinical advice.",
+            "- Adapt wording and detail level for the target audience without changing the facts.",
             "",
             "Source context:",
             _source_context(context),
