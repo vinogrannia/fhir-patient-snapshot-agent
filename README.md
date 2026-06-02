@@ -57,6 +57,7 @@ This project is for demonstration purposes only. It does not provide diagnosis, 
 +-- app/
 |   +-- README.md
 |   +-- fhir_client.py
+|   +-- llm_provider.py
 |   +-- normalizer.py
 |   +-- prompt_builder.py
 |   +-- summary_renderer.py
@@ -92,6 +93,9 @@ The local template also requires Basic Auth:
 ```text
 FHIR_USERNAME=_SYSTEM
 FHIR_PASSWORD=SYS
+LLM_BASE_URL=https://api.tokenfactory.nebius.com/v1
+LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct
+LLM_API_KEY=
 ```
 
 ## Python Setup
@@ -129,10 +133,21 @@ FHIR_PASSWORD=SYS \
 python -m app.snapshot_demo 1
 ```
 
+Local `.env` files are loaded automatically and are ignored by Git.
+
 Generate an LLM-ready prompt instead of the deterministic demo summary:
 
 ```powershell
 python -m app.snapshot_demo 1 --format prompt
+```
+
+Generate a summary with an OpenAI-compatible LLM provider. The default configuration targets Nebius Token Factory:
+
+```powershell
+$env:LLM_BASE_URL='https://api.tokenfactory.nebius.com/v1'
+$env:LLM_MODEL='meta-llama/Llama-3.3-70B-Instruct'
+$env:LLM_API_KEY='your-nebius-token'
+python -m app.snapshot_demo 1 --format llm
 ```
 
 On Windows PowerShell:
@@ -161,6 +176,7 @@ Day 1 baseline in progress:
 - Deterministic patient snapshot renderer added
 - Normalizer unit test added
 - Provider-neutral LLM prompt builder added
+- Nebius/OpenAI-compatible LLM provider added
 
 ## Next Steps
 

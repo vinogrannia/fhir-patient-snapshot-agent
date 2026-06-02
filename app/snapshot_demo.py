@@ -14,18 +14,23 @@ def main() -> None:
     parser.add_argument("patient_id", help="FHIR Patient resource ID")
     parser.add_argument(
         "--format",
-        choices=["counts", "markdown", "prompt"],
+        choices=["counts", "markdown", "prompt", "llm"],
         default="markdown",
         help="Output format for the fetched patient snapshot.",
     )
     args = parser.parse_args()
 
-    if args.format in {"markdown", "prompt"}:
+    if args.format in {"markdown", "prompt", "llm"}:
         client = FhirClient.from_env()
         agent = PatientSnapshotAgent(client)
-        mode = "prompt" if args.format == "prompt" else "deterministic"
+        if args.format == "prompt":
+            mode = "prompt"
+        elif args.format == "llm":
+            mode = "llm"
+        else:
+            mode = "deterministic"
         result = agent.run(args.patient_id, mode=mode)
-        if result.system_instructions:
+        if result.system_instructions and args.format == "prompt":
             print("# System Instructions")
             print()
             print(result.system_instructions)

@@ -11,6 +11,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
+from app.config import load_dotenv
+
 
 DEFAULT_FHIR_BASE_URL = "http://localhost:32783/fhir/r4"
 
@@ -32,6 +34,7 @@ class FhirClient:
     def from_env(cls) -> "FhirClient":
         """Create a client using FHIR_BASE_URL and optional Basic Auth config."""
 
+        load_dotenv()
         return cls(
             base_url=os.getenv("FHIR_BASE_URL", DEFAULT_FHIR_BASE_URL),
             username=os.getenv("FHIR_USERNAME"),

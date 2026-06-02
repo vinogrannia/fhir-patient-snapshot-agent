@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 
+from app.llm_provider import extract_chat_completion_text
 from app.normalizer import normalize_snapshot
 from app.prompt_builder import build_snapshot_prompt
 
@@ -97,6 +98,20 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("does not diagnose", prompt)
         self.assertIn("Source FHIR resources", prompt)
         self.assertIn("Patient/1", prompt)
+
+    def test_extracts_chat_completion_text(self) -> None:
+        payload = {
+            "choices": [
+                {
+                    "message": {
+                        "role": "assistant",
+                        "content": "Clinical summary text",
+                    }
+                }
+            ]
+        }
+
+        self.assertEqual(extract_chat_completion_text(payload), "Clinical summary text")
 
 
 if __name__ == "__main__":
