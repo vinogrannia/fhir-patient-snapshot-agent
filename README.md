@@ -112,7 +112,15 @@ Verified resource counts:
 
 Sample generated summary: `docs/sample_patient_1_llm_summary.md`
 
-UI screenshots can be placed in `docs/screenshots/`. Recommended screenshot: `docs/screenshots/streamlit_patient_snapshot.png`.
+### Streamlit Web UI Screenshots
+
+The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary audience, generate a deterministic or LLM-backed patient snapshot, and review the source FHIR resources used by the agent.
+
+![Streamlit ED summary top](docs/screenshots/streamlit_ed_summary_top.png)
+
+![Streamlit ED summary middle](docs/screenshots/streamlit_ed_summary_middle.png)
+
+![Streamlit ED summary bottom](docs/screenshots/streamlit_ed_summary_bottom.png)
 
 ## Repository Structure
 
