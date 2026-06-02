@@ -69,6 +69,8 @@ The LLM prompt explicitly prohibits creating new care plans, monitoring recommen
 
 The Missing Information section is constrained to items identified by the deterministic normalizer, which reduces the risk of the model inventing extra clinical gaps.
 
+The prompt also requests Markdown headings, bullet lists, and blank lines between sections so generated summaries remain readable in the web UI.
+
 ## Tech Stack
 
 - InterSystems IRIS for Health / FHIR Server
@@ -88,6 +90,7 @@ The Missing Information section is constrained to items identified by the determ
 - LLM-ready prompt mode
 - Nebius/OpenAI-compatible LLM summary mode
 - Role-specific prompt sections for clinicians, ED doctors, care managers, patients, and family caregivers
+- Prompt rules for readable Markdown output and source-data checks limited to data-quality/source-grounding facts
 - Streamlit web UI for patient ID entry, summary display, and collapsible source-resource review
 - Unit tests for normalisation and LLM response parsing
 - Sample LLM output for Patient `1`

@@ -82,6 +82,8 @@ Explain:
 - Each audience uses a different required section template, so the ED doctor prompt starts with immediate orientation and medication/allergy verification.
 - The prompt instructs the model not to diagnose, recommend treatment, or infer facts not present in the source data.
 - The prompt asks for neutral source-data checks instead of imperative verify/confirm instructions.
+- The prompt limits source-data checks to data-quality or source-grounding facts, not ordinary resolved history.
+- The prompt requests Markdown headings, bullet lists, and blank lines between sections for readability.
 - The prompt instructs the model to list missing information only when it was identified by the deterministic normalizer.
 - The prompt includes source FHIR resource IDs for verification.
 
