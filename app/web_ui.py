@@ -143,7 +143,7 @@ def _agent_mode(mode_label: str) -> UiMode:
 
 def _without_source_resources_section(markdown: str) -> str:
     return re.sub(
-        r"(?ims)^\s{0,3}(?:#+\s*)?Source FHIR Resources Used\b.*\Z",
+        r"(?ims)^\s{0,3}(?:#+\s*)?\*{0,2}Source FHIR Resources Used\*{0,2}(?:\s|:|$).*\Z",
         "",
         markdown,
     ).rstrip()

@@ -188,6 +188,27 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertNotIn("Source FHIR Resources Used", visible_summary)
         self.assertNotIn("Condition/13", visible_summary)
 
+    def test_removes_bold_source_section_from_ui_summary(self) -> None:
+        summary = "\n".join(
+            [
+                "Patient Snapshot",
+                "",
+                "**Immediate Orientation**",
+                "Source data shows one active condition.",
+                "",
+                "**Source FHIR Resources Used**",
+                "",
+                "Patient/1",
+                "Condition/13",
+            ]
+        )
+
+        visible_summary = _without_source_resources_section(summary)
+
+        self.assertIn("Immediate Orientation", visible_summary)
+        self.assertNotIn("Source FHIR Resources Used", visible_summary)
+        self.assertNotIn("Patient/1", visible_summary)
+
 
 if __name__ == "__main__":
     unittest.main()
