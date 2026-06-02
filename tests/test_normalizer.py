@@ -125,10 +125,12 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("Use Markdown headings for each required section", prompt)
         self.assertIn("Put a blank line before every section heading", prompt)
         self.assertIn("Do not copy raw source-context lines verbatim", prompt)
+        self.assertIn("Do not include FHIR resource IDs in narrative sections", prompt)
+        self.assertIn("Keep FHIR resource IDs only in the Source FHIR resources used section", prompt)
         self.assertIn("readable clinical language", prompt)
         self.assertIn("Do not repeat resolved history", prompt)
         self.assertIn("Do not invent additional missing information", prompt)
-        self.assertIn("Every explicitly mentioned FHIR resource ID must appear", prompt)
+        self.assertIn("Every source resource used to generate the summary must appear", prompt)
         self.assertIn("only include items listed under 'Missing information identified by deterministic normalizer'", prompt)
         self.assertIn("Recent vital-sign observations", prompt)
         self.assertIn("Care plans", prompt)
@@ -224,6 +226,23 @@ class NormalizeSnapshotTest(unittest.TestCase):
         visible_summary = _clean_summary_markdown(summary)
 
         self.assertIn("120/82 mmHg\n\nRecent laboratory observations:", visible_summary)
+
+    def test_removes_inline_resource_id_prefixes_from_ui_summary(self) -> None:
+        summary = "\n".join(
+            [
+                "Active problems",
+                "Condition/13: Body mass index 30+ - obesity",
+                "Recent observations",
+                "Observation/555: Body Mass Index, 30.35 kg/m2",
+            ]
+        )
+
+        visible_summary = _clean_summary_markdown(summary)
+
+        self.assertIn("Body mass index 30+ - obesity", visible_summary)
+        self.assertIn("Body Mass Index, 30.35 kg/m2", visible_summary)
+        self.assertNotIn("Condition/13", visible_summary)
+        self.assertNotIn("Observation/555", visible_summary)
 
 
 if __name__ == "__main__":

@@ -69,7 +69,7 @@ The LLM prompt explicitly prohibits creating new care plans, monitoring recommen
 
 The Missing Information section is constrained to items identified by the deterministic normalizer, which reduces the risk of the model inventing extra clinical gaps.
 
-The prompt also requests Markdown headings, bullet lists, blank lines between sections, and readable clinical language instead of raw source-context line copying. The web UI applies a small display cleanup for common LLM Markdown spacing issues.
+The prompt also requests Markdown headings, bullet lists, blank lines between sections, and readable clinical language instead of raw source-context line copying. FHIR resource IDs are kept out of narrative sections and shown in the collapsible source-resource review. The web UI applies a small display cleanup for common LLM Markdown spacing issues.
 
 ## Tech Stack
 
@@ -91,6 +91,7 @@ The prompt also requests Markdown headings, bullet lists, blank lines between se
 - Nebius/OpenAI-compatible LLM summary mode
 - Role-specific prompt sections for clinicians, ED doctors, care managers, patients, and family caregivers
 - Prompt rules for readable Markdown output and source-data checks limited to data-quality/source-grounding facts
+- UI cleanup that keeps FHIR resource IDs out of the narrative summary while preserving them in source review
 - Streamlit web UI for patient ID entry, summary display, and collapsible source-resource review
 - Unit tests for normalisation and LLM response parsing
 - Sample LLM output for Patient `1`

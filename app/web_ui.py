@@ -151,6 +151,7 @@ def _without_source_resources_section(markdown: str) -> str:
 
 def _clean_summary_markdown(markdown: str) -> str:
     cleaned = _without_source_resources_section(markdown)
+    cleaned = _without_inline_resource_ids(cleaned)
     subsection_labels = [
         "Recent vital-sign observations:",
         "Recent laboratory observations:",
@@ -164,6 +165,14 @@ def _clean_summary_markdown(markdown: str) -> str:
         cleaned = re.sub(rf"(?<!\n\n)\s+({re.escape(label)})", rf"\n\n\1", cleaned)
 
     return cleaned.rstrip()
+
+
+def _without_inline_resource_ids(markdown: str) -> str:
+    return re.sub(
+        r"\b(?:Patient|Condition|MedicationRequest|AllergyIntolerance|Observation|Encounter|CarePlan)/\d+:\s*",
+        "",
+        markdown,
+    )
 
 
 if __name__ == "__main__":
