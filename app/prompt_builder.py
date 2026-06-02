@@ -30,6 +30,7 @@ def build_snapshot_prompt(context: PatientSnapshotContext) -> str:
             "- Medications",
             "- Allergies",
             "- Recent observations/labs",
+            "- Care plans",
             "- Source-data verification points, not recommendations",
             "- Missing information",
             "- Source FHIR resources used",
@@ -82,6 +83,9 @@ def _source_context(context: PatientSnapshotContext) -> str:
         "",
         "Recent encounters:",
         *_encounter_lines(context.recent_encounters),
+        "",
+        "Care plans:",
+        *_care_plan_lines(context.care_plans),
         "",
         "Missing information identified by deterministic normalizer:",
         *_fallback_lines(context.missing_information),
@@ -144,6 +148,17 @@ def _encounter_lines(items: object) -> list[str]:
     return [
         f"- Encounter/{item.id}: status={item.status}; class={item.class_code}; start={item.start}; end={item.end}"
         for item in encounters
+    ]
+
+
+def _care_plan_lines(items: object) -> list[str]:
+    care_plans = list(items)
+    if not care_plans:
+        return ["- none"]
+
+    return [
+        f"- CarePlan/{item.id}: {item.title}; status={item.status}; intent={item.intent}; period={item.period_start} to {item.period_end}"
+        for item in care_plans
     ]
 
 

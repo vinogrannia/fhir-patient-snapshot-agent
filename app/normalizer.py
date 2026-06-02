@@ -81,6 +81,16 @@ class EncounterSummary:
 
 
 @dataclass(frozen=True)
+class CarePlanSummary:
+    id: str
+    title: str
+    status: str
+    intent: str
+    period_start: str
+    period_end: str
+
+
+@dataclass(frozen=True)
 class PatientSnapshotContext:
     patient: PatientOverview
     active_conditions: list[ConditionSummary]
@@ -90,6 +100,7 @@ class PatientSnapshotContext:
     recent_observations: list[ObservationSummary]
     observation_groups: ObservationGroups
     recent_encounters: list[EncounterSummary]
+    care_plans: list[CarePlanSummary]
     missing_information: list[str]
     source_resources: list[SourceRef]
 
@@ -103,6 +114,7 @@ def normalize_snapshot(raw: dict[str, Any], recent_observation_limit: int = 12) 
     allergies = [_normalize_allergy(item) for item in bundle_entries(raw["allergies"])]
     observations = [_normalize_observation(item) for item in bundle_entries(raw["observations"])]
     encounters = [_normalize_encounter(item) for item in bundle_entries(raw["encounters"])]
+    care_plans = [_normalize_care_plan(item) for item in bundle_entries(raw["care_plans"])]
 
     observations = sorted(observations, key=lambda item: item.effective, reverse=True)
     recent_observations = observations[:recent_observation_limit]
@@ -132,6 +144,7 @@ def normalize_snapshot(raw: dict[str, Any], recent_observation_limit: int = 12) 
         recent_observations=recent_observations,
         observation_groups=_group_observations(recent_observations),
         recent_encounters=encounters[:5],
+        care_plans=care_plans,
         missing_information=missing_information,
         source_resources=_source_resources(raw),
     )
@@ -211,6 +224,29 @@ def _normalize_encounter(resource: dict[str, Any]) -> EncounterSummary:
     )
 
 
+def _normalize_care_plan(resource: dict[str, Any]) -> CarePlanSummary:
+    period = resource.get("period", {})
+    if not isinstance(period, dict):
+        period = {}
+
+    return CarePlanSummary(
+        id=_string(resource.get("id")),
+        title=_string(resource.get("title") or _care_plan_category(resource), "Untitled care plan"),
+        status=_string(resource.get("status")),
+        intent=_string(resource.get("intent")),
+        period_start=_string(period.get("start")),
+        period_end=_string(period.get("end")),
+    )
+
+
+def _care_plan_category(resource: dict[str, Any]) -> str:
+    categories = resource.get("category")
+    if not isinstance(categories, list) or not categories:
+        return ""
+
+    return _codeable_text(categories[0])
+
+
 def _group_observations(observations: list[ObservationSummary]) -> ObservationGroups:
     vitals: list[ObservationSummary] = []
     labs: list[ObservationSummary] = []
@@ -260,7 +296,7 @@ def _missing_information(
 
 def _source_resources(raw: dict[str, Any]) -> list[SourceRef]:
     sources = [_source_ref(raw["patient"])]
-    for key in ("conditions", "medications", "allergies", "observations", "encounters"):
+    for key in ("conditions", "medications", "allergies", "observations", "encounters", "care_plans"):
         sources.extend(_source_ref(resource) for resource in bundle_entries(raw[key]))
 
     return sorted(sources, key=lambda item: (item.resource_type, _resource_id_sort_key(item.resource_id)))

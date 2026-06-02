@@ -69,6 +69,21 @@ class NormalizeSnapshotTest(unittest.TestCase):
                 ],
             },
             "encounters": {"resourceType": "Bundle", "entry": []},
+            "care_plans": {
+                "resourceType": "Bundle",
+                "entry": [
+                    {
+                        "resource": {
+                            "resourceType": "CarePlan",
+                            "id": "900",
+                            "status": "active",
+                            "intent": "plan",
+                            "title": "Weight management plan",
+                            "period": {"start": "2019-09-08"},
+                        }
+                    }
+                ],
+            },
         }
 
         context = normalize_snapshot(raw)
@@ -79,6 +94,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertEqual(context.recent_observations[0].value, "30.35 kg/m2")
         self.assertEqual(context.observation_groups.vitals[0].name, "Body Mass Index")
         self.assertEqual(context.observation_groups.labs, [])
+        self.assertEqual(context.care_plans[0].title, "Weight management plan")
         self.assertIn("No allergy intolerance records were found.", context.missing_information)
 
     def test_builds_prompt_with_safety_constraints(self) -> None:
@@ -93,6 +109,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
             "allergies": {"resourceType": "Bundle", "entry": []},
             "observations": {"resourceType": "Bundle", "entry": []},
             "encounters": {"resourceType": "Bundle", "entry": []},
+            "care_plans": {"resourceType": "Bundle", "entry": []},
         }
 
         prompt = build_snapshot_prompt(normalize_snapshot(raw))
@@ -100,6 +117,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("does not diagnose", prompt)
         self.assertIn("Do not recommend monitoring", prompt)
         self.assertIn("Recent vital-sign observations", prompt)
+        self.assertIn("Care plans", prompt)
         self.assertIn("Source FHIR resources", prompt)
         self.assertIn("Patient/1", prompt)
 

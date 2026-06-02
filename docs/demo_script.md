@@ -49,6 +49,7 @@ MedicationRequest: 2
 AllergyIntolerance: 0
 Observation: 88
 Encounter: 14
+CarePlan: 2
 ```
 
 Explain:

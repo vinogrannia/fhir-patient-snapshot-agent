@@ -104,13 +104,14 @@ def _render_landing_state() -> None:
 
 
 def _render_context_metrics(context: PatientSnapshotContext) -> None:
-    cols = st.columns(6)
+    cols = st.columns(7)
     cols[0].metric("Patient", context.patient.id)
     cols[1].metric("Active Problems", len(context.active_conditions))
     cols[2].metric("Medications", len(context.medications))
     cols[3].metric("Allergies", len(context.allergies))
     cols[4].metric("Recent Observations", len(context.recent_observations))
     cols[5].metric("Recent Encounters", len(context.recent_encounters))
+    cols[6].metric("Care Plans", len(context.care_plans))
 
 
 def _agent_mode(mode_label: str) -> UiMode:

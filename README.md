@@ -18,6 +18,7 @@ Idea link: https://community.intersystems.com/post/intersystems-programming-cont
 - AllergyIntolerance
 - Observation
 - Encounter
+- CarePlan
 
 ## Core Workflow
 
@@ -76,7 +77,7 @@ The LLM prompt explicitly prohibits care plans, monitoring recommendations, medi
 
 - FHIR R4 client with Basic Auth support
 - Local `.env` loading without external dependencies
-- Patient snapshot resource fetch across Patient, Condition, MedicationRequest, AllergyIntolerance, Observation, and Encounter
+- Patient snapshot resource fetch across Patient, Condition, MedicationRequest, AllergyIntolerance, Observation, Encounter, and CarePlan
 - FHIR Bundle extraction and clinical context normalisation
 - Observation grouping for recent vitals, labs, survey/social history, and other observations
 - Deterministic Markdown summary mode
@@ -228,7 +229,7 @@ python -m unittest
 Working prototype:
 
 - Local InterSystems IRIS for Health FHIR Server verified
-- Patient `1` verified with 5 conditions, 2 medication requests, 0 allergy records, 88 observations, and 14 encounters
+- Patient `1` verified with 5 conditions, 2 medication requests, 0 allergy records, 88 observations, 14 encounters, and 2 care plans
 - Recent observations are grouped into vitals, labs, survey/social history, and other observations
 - Deterministic summary mode works
 - LLM prompt mode works

@@ -6,6 +6,7 @@ from app.normalizer import (
     AllergySummary,
     ConditionSummary,
     EncounterSummary,
+    CarePlanSummary,
     MedicationSummary,
     ObservationSummary,
     PatientSnapshotContext,
@@ -68,6 +69,10 @@ def render_markdown_summary(context: PatientSnapshotContext) -> str:
         "## Recent Encounters",
         "",
         *_encounter_lines(context.recent_encounters),
+        "",
+        "## Care Plans",
+        "",
+        *_care_plan_lines(context.care_plans),
         "",
         "## Source-Data Verification Points",
         "",
@@ -134,6 +139,16 @@ def _encounter_lines(encounters: list[EncounterSummary]) -> list[str]:
     return [
         f"- Encounter/{item.id}: {item.status or 'status unknown'}, class {item.class_code or 'unknown'}, start {_or_missing(item.start)}"
         for item in encounters
+    ]
+
+
+def _care_plan_lines(care_plans: list[CarePlanSummary]) -> list[str]:
+    if not care_plans:
+        return ["- No care plans found."]
+
+    return [
+        f"- CarePlan/{item.id}: {item.title} ({item.status or 'status unknown'}, intent: {_or_missing(item.intent)})"
+        for item in care_plans
     ]
 
 

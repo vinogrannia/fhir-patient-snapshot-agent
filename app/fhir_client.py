@@ -62,6 +62,7 @@ class FhirClient:
             "allergies": self.search("AllergyIntolerance", patient=patient_ref),
             "observations": self.search("Observation", subject=patient_ref),
             "encounters": self.search("Encounter", subject=patient_ref),
+            "care_plans": self.search("CarePlan", subject=patient_ref),
         }
 
     def _get(self, path: str, params: dict[str, str] | None = None) -> dict[str, Any]:

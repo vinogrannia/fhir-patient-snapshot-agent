@@ -50,6 +50,7 @@ def main() -> None:
         "allergies": len(bundle_entries(resources["allergies"])),
         "observations": len(bundle_entries(resources["observations"])),
         "encounters": len(bundle_entries(resources["encounters"])),
+        "care_plans": len(bundle_entries(resources["care_plans"])),
     }
 
     print(json.dumps({"patient_id": args.patient_id, "resource_counts": counts}, indent=2))
