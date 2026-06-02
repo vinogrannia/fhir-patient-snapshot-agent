@@ -100,10 +100,6 @@ def main() -> None:
         st.subheader("Patient Snapshot")
         st.markdown(result.output)
 
-    with st.expander("Source FHIR Resources Used", expanded=False):
-        for source in result.context.source_resources:
-            st.write(f"- {source.resource_type}/{source.resource_id}")
-
 
 def _render_landing_state() -> None:
     fhir_client = FhirClient.from_env()

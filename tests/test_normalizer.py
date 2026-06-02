@@ -118,10 +118,35 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("Do not recommend monitoring", prompt)
         self.assertIn("Target audience: patient", prompt)
         self.assertIn("Write in plain language for the patient", prompt)
+        self.assertIn("Your snapshot", prompt)
+        self.assertIn("Do not invent additional missing information", prompt)
+        self.assertIn("only include items listed under 'Missing information identified by deterministic normalizer'", prompt)
         self.assertIn("Recent vital-sign observations", prompt)
         self.assertIn("Care plans", prompt)
         self.assertIn("Source FHIR resources", prompt)
         self.assertIn("Patient/1", prompt)
+
+    def test_builds_distinct_ed_doctor_prompt_sections(self) -> None:
+        raw = {
+            "patient": {
+                "resourceType": "Patient",
+                "id": "1",
+                "name": [{"given": ["Carroll471"], "family": "O'Hara248"}],
+            },
+            "conditions": {"resourceType": "Bundle", "entry": []},
+            "medications": {"resourceType": "Bundle", "entry": []},
+            "allergies": {"resourceType": "Bundle", "entry": []},
+            "observations": {"resourceType": "Bundle", "entry": []},
+            "encounters": {"resourceType": "Bundle", "entry": []},
+            "care_plans": {"resourceType": "Bundle", "entry": []},
+        }
+
+        prompt = build_snapshot_prompt(normalize_snapshot(raw), audience="ed_doctor")
+
+        self.assertIn("Target audience: ed_doctor", prompt)
+        self.assertIn("Immediate orientation", prompt)
+        self.assertIn("Medication/allergy verification", prompt)
+        self.assertIn("Keep it terse and scan-friendly", prompt)
 
     def test_extracts_chat_completion_text(self) -> None:
         payload = {

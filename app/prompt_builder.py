@@ -9,21 +9,77 @@ from app.summary_renderer import SAFETY_NOTE
 AUDIENCE_INSTRUCTIONS = {
     "clinician": "Write for a clinician who needs a concise cross-resource patient snapshot.",
     "ed_doctor": (
-        "Write for an emergency department doctor who needs rapid orientation to source-data "
-        "problems, medications, allergies, recent encounters, and recent observations."
+        "Write for an emergency department doctor. Prioritise immediate orientation, medication "
+        "and allergy verification, recent encounters, and recent observations. Keep it terse and scan-friendly."
     ),
     "care_manager": (
-        "Write for a care manager who needs source-data context around active problems, care "
-        "plans, recent utilisation, missing information, and verification points."
+        "Write for a care manager. Prioritise active problems, care plans, recent utilisation, "
+        "documented gaps, and source-data verification points. Do not create tasks or outreach steps."
     ),
     "patient": (
-        "Write in plain language for the patient. Keep medical terms when they come from the "
-        "source data, but briefly clarify them without adding advice."
+        "Write in plain language for the patient. Avoid unexplained clinical shorthand. Keep medical "
+        "terms only when they come from the source data, and briefly clarify them without adding advice."
     ),
     "family_caregiver": (
-        "Write in plain language for a family caregiver. Focus on what the source data says, "
-        "what is missing, and what is marked for source-data verification."
+        "Write in plain language for a family caregiver. Focus on what the source data says, what is "
+        "unknown, and what is marked for source-data verification. Do not assign responsibilities."
     ),
+}
+
+
+AUDIENCE_SECTIONS = {
+    "clinician": [
+        "Patient overview",
+        "Active problems",
+        "Medications",
+        "Allergies",
+        "Recent observations/labs",
+        "Care plans",
+        "Source-data verification points",
+        "Missing information",
+        "Source FHIR resources used",
+    ],
+    "ed_doctor": [
+        "Immediate orientation",
+        "Active problems relevant to this snapshot",
+        "Medication/allergy verification",
+        "Recent encounters and observations",
+        "Care plans present in source data",
+        "Source-data verification points",
+        "Missing information",
+        "Source FHIR resources used",
+    ],
+    "care_manager": [
+        "Patient context",
+        "Active problems",
+        "Care plans and recent utilisation",
+        "Medications and allergies",
+        "Recent observations/labs",
+        "Documented gaps from source data",
+        "Source-data verification points",
+        "Source FHIR resources used",
+    ],
+    "patient": [
+        "Your snapshot",
+        "Health problems listed in the source data",
+        "Medicines listed in the source data",
+        "Allergies listed in the source data",
+        "Recent measurements and lab results",
+        "Care plans listed in the source data",
+        "Information to verify in the source data",
+        "Missing information",
+        "Source FHIR resources used",
+    ],
+    "family_caregiver": [
+        "Patient snapshot",
+        "Health problems listed in the source data",
+        "Medicines and allergies listed in the source data",
+        "Recent encounters, measurements, and labs",
+        "Care plans listed in the source data",
+        "Information to verify in the source data",
+        "Missing information",
+        "Source FHIR resources used",
+    ],
 }
 
 
@@ -39,27 +95,20 @@ Always include a source resource list so the output can be verified."""
 def build_snapshot_prompt(context: PatientSnapshotContext, audience: str = "clinician") -> str:
     """Build the user prompt that can be sent to an LLM summarisation provider."""
 
-    audience_instruction = AUDIENCE_INSTRUCTIONS.get(audience, AUDIENCE_INSTRUCTIONS["clinician"])
+    audience_key = audience if audience in AUDIENCE_INSTRUCTIONS else "clinician"
+    audience_instruction = AUDIENCE_INSTRUCTIONS[audience_key]
 
     return "\n".join(
         [
             "Create a concise FHIR patient snapshot using only the source context below.",
             "",
-            f"Target audience: {audience}",
+            f"Target audience: {audience_key}",
             audience_instruction,
             "",
             SAFETY_NOTE,
             "",
             "Required sections:",
-            "- Patient overview",
-            "- Active problems",
-            "- Medications",
-            "- Allergies",
-            "- Recent observations/labs",
-            "- Care plans",
-            "- Source-data verification points, not recommendations",
-            "- Missing information",
-            "- Source FHIR resources used",
+            *_required_section_lines(audience_key),
             "",
             "Rules:",
             "- Do not recommend monitoring, treatment, medication changes, referrals, or follow-up actions.",
@@ -67,11 +116,18 @@ def build_snapshot_prompt(context: PatientSnapshotContext, audience: str = "clin
             "- Do not say that a condition requires action unless the source data explicitly says so.",
             "- Use wording such as 'source data shows' or 'verify in source data' instead of clinical advice.",
             "- Adapt wording and detail level for the target audience without changing the facts.",
+            "- In the Missing information section, only include items listed under 'Missing information identified by deterministic normalizer'.",
+            "- Do not invent additional missing information, risks, gaps, concerns, or follow-up needs.",
+            "- Keep the Source FHIR resources used section concise: include the resources you used in the generated summary, not every available resource.",
             "",
             "Source context:",
             _source_context(context),
         ]
     )
+
+
+def _required_section_lines(audience: str) -> list[str]:
+    return [f"- {section}" for section in AUDIENCE_SECTIONS[audience]]
 
 
 def _source_context(context: PatientSnapshotContext) -> str:

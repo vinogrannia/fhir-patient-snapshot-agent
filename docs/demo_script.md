@@ -79,7 +79,9 @@ Explain:
 
 - The app builds a safety-framed prompt from normalised FHIR data.
 - The prompt can be adapted for a target audience such as clinician, ED doctor, care manager, patient, or family caregiver.
+- Each audience uses a different required section template, so the ED doctor prompt starts with immediate orientation and medication/allergy verification.
 - The prompt instructs the model not to diagnose, recommend treatment, or infer facts not present in the source data.
+- The prompt instructs the model to list missing information only when it was identified by the deterministic normalizer.
 - The prompt includes source FHIR resource IDs for verification.
 
 ## 6. Generate the LLM Summary
@@ -124,7 +126,7 @@ Explain:
 - The user can choose deterministic summary, LLM summary, or LLM prompt preview.
 - The user can select a summary audience.
 - The result panel shows the generated patient snapshot.
-- The source resource expander lists the FHIR resources used for verification.
+- The generated snapshot includes the FHIR resources used for verification.
 
 ## 8. Close With Safety Framing
 
