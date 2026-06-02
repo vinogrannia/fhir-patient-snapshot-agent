@@ -163,6 +163,7 @@ def _clean_summary_markdown(markdown: str) -> str:
         "Medications:",
         "Allergies:",
         "The patient has no recorded allergy intolerance records.",
+        "Source data contains no allergy intolerance records.",
     ]
     for label in subsection_labels:
         cleaned = re.sub(rf"(?<!\n\n)\s+({re.escape(label)})", rf"\n\n\1", cleaned)

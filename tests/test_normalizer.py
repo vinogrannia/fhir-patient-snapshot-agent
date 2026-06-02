@@ -247,6 +247,19 @@ class NormalizeSnapshotTest(unittest.TestCase):
             visible_summary,
         )
 
+    def test_adds_spacing_before_source_data_allergy_statement(self) -> None:
+        summary = (
+            "Medication/allergy verification\n"
+            "Naproxen sodium 220 MG Oral Tablet (stopped) Source data contains no allergy intolerance records."
+        )
+
+        visible_summary = _clean_summary_markdown(summary)
+
+        self.assertIn(
+            "Naproxen sodium 220 MG Oral Tablet (stopped)\n\nSource data contains no allergy intolerance records.",
+            visible_summary,
+        )
+
     def test_adds_spacing_before_short_recent_observations_heading(self) -> None:
         summary = (
             "Recent encounters and observations\n"
