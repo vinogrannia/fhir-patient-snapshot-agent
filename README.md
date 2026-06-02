@@ -55,7 +55,6 @@ This project is for demonstration purposes only. It does not provide diagnosis, 
 ```text
 .
 +-- app/
-|   +-- README.md
 |   +-- fhir_client.py
 |   +-- llm_provider.py
 |   +-- normalizer.py
@@ -64,10 +63,9 @@ This project is for demonstration purposes only. It does not provide diagnosis, 
 |   +-- snapshot_demo.py
 +-- tests/
 |   +-- test_normalizer.py
-+-- data/
-|   +-- README.md
 +-- docs/
 |   +-- day1_fhir_setup.md
+|   +-- sample_patient_1_llm_summary.md
 +-- .env.example
 +-- .gitignore
 +-- README.md
