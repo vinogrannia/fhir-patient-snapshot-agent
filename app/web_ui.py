@@ -99,7 +99,7 @@ def main() -> None:
         st.code(result.output, language="markdown")
     else:
         st.subheader("Patient Snapshot")
-        st.markdown(_without_source_resources_section(result.output))
+        st.markdown(_clean_summary_markdown(result.output))
 
     if mode != "prompt":
         with st.expander(f"Source FHIR resources used ({len(result.context.source_resources)})"):
@@ -147,6 +147,23 @@ def _without_source_resources_section(markdown: str) -> str:
         "",
         markdown,
     ).rstrip()
+
+
+def _clean_summary_markdown(markdown: str) -> str:
+    cleaned = _without_source_resources_section(markdown)
+    subsection_labels = [
+        "Recent vital-sign observations:",
+        "Recent laboratory observations:",
+        "Recent survey/social history observations:",
+        "Other recent observations:",
+        "Recent encounters:",
+        "Medications:",
+        "Allergies:",
+    ]
+    for label in subsection_labels:
+        cleaned = re.sub(rf"(?<!\n\n)\s+({re.escape(label)})", rf"\n\n\1", cleaned)
+
+    return cleaned.rstrip()
 
 
 if __name__ == "__main__":

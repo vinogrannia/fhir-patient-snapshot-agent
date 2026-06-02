@@ -119,6 +119,8 @@ def build_snapshot_prompt(context: PatientSnapshotContext, audience: str = "clin
             "- Use Markdown headings for each required section.",
             "- Use bullet lists for grouped observations, medications, care plans, and source resources.",
             "- Put a blank line before every section heading and subsection heading.",
+            "- Do not copy raw source-context lines verbatim except in the Source FHIR resources used section.",
+            "- Summarise resource details in readable clinical language while preserving resource IDs when they help source verification.",
             "- In Source-data checks or Source-data notes, include only data-quality or source-grounding facts such as no AllergyIntolerance resources returned, only stopped medication requests present, or source resources needing reconciliation.",
             "- Do not repeat resolved history or ordinary clinical facts in Source-data checks or Source-data notes.",
             "- Do not use imperative verbs such as verify, confirm, check, review, monitor, or follow up in the generated summary.",

@@ -69,7 +69,7 @@ The LLM prompt explicitly prohibits creating new care plans, monitoring recommen
 
 The Missing Information section is constrained to items identified by the deterministic normalizer, which reduces the risk of the model inventing extra clinical gaps.
 
-The prompt also requests Markdown headings, bullet lists, and blank lines between sections so generated summaries remain readable in the web UI.
+The prompt also requests Markdown headings, bullet lists, blank lines between sections, and readable clinical language instead of raw source-context line copying. The web UI applies a small display cleanup for common LLM Markdown spacing issues.
 
 ## Tech Stack
 

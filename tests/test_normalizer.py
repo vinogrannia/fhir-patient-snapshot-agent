@@ -7,7 +7,7 @@ import unittest
 from app.llm_provider import extract_chat_completion_text
 from app.normalizer import normalize_snapshot
 from app.prompt_builder import build_snapshot_prompt
-from app.web_ui import _without_source_resources_section
+from app.web_ui import _clean_summary_markdown
 
 
 class NormalizeSnapshotTest(unittest.TestCase):
@@ -124,6 +124,8 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("Do not use imperative verbs", prompt)
         self.assertIn("Use Markdown headings for each required section", prompt)
         self.assertIn("Put a blank line before every section heading", prompt)
+        self.assertIn("Do not copy raw source-context lines verbatim", prompt)
+        self.assertIn("readable clinical language", prompt)
         self.assertIn("Do not repeat resolved history", prompt)
         self.assertIn("Do not invent additional missing information", prompt)
         self.assertIn("Every explicitly mentioned FHIR resource ID must appear", prompt)
@@ -185,7 +187,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
             ]
         )
 
-        visible_summary = _without_source_resources_section(summary)
+        visible_summary = _clean_summary_markdown(summary)
 
         self.assertIn("Immediate Orientation", visible_summary)
         self.assertNotIn("Source FHIR Resources Used", visible_summary)
@@ -206,11 +208,22 @@ class NormalizeSnapshotTest(unittest.TestCase):
             ]
         )
 
-        visible_summary = _without_source_resources_section(summary)
+        visible_summary = _clean_summary_markdown(summary)
 
         self.assertIn("Immediate Orientation", visible_summary)
         self.assertNotIn("Source FHIR Resources Used", visible_summary)
         self.assertNotIn("Patient/1", visible_summary)
+
+    def test_adds_spacing_before_embedded_observation_subheadings(self) -> None:
+        summary = (
+            "Recent observations/labs\n"
+            "Observation/556: Blood Pressure; value=120/82 mmHg Recent laboratory observations:\n"
+            "Observation/557: Total Cholesterol; value=185.81 mg/dL"
+        )
+
+        visible_summary = _clean_summary_markdown(summary)
+
+        self.assertIn("120/82 mmHg\n\nRecent laboratory observations:", visible_summary)
 
 
 if __name__ == "__main__":

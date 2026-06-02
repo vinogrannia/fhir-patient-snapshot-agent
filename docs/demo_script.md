@@ -84,6 +84,7 @@ Explain:
 - The prompt asks for neutral source-data checks instead of imperative verify/confirm instructions.
 - The prompt limits source-data checks to data-quality or source-grounding facts, not ordinary resolved history.
 - The prompt requests Markdown headings, bullet lists, and blank lines between sections for readability.
+- The prompt discourages copying raw source-context lines directly into the generated summary.
 - The prompt instructs the model to list missing information only when it was identified by the deterministic normalizer.
 - The prompt includes source FHIR resource IDs for verification.
 
