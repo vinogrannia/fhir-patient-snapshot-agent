@@ -96,6 +96,24 @@ The prompt also requests Markdown headings, bullet lists, blank lines between se
 - Unit tests for normalisation and LLM response parsing
 - Sample LLM output for Patient `1`
 
+## Demo Preview
+
+The current demo uses Patient `1` from the local InterSystems IRIS for Health FHIR Server.
+
+Verified resource counts:
+
+- Patient: 1
+- Condition: 5
+- MedicationRequest: 2
+- AllergyIntolerance: 0
+- Observation: 88
+- Encounter: 14
+- CarePlan: 2
+
+Sample generated summary: `docs/sample_patient_1_llm_summary.md`
+
+UI screenshots can be placed in `docs/screenshots/`. Recommended screenshot: `docs/screenshots/streamlit_patient_snapshot.png`.
+
 ## Repository Structure
 
 ```text
@@ -114,6 +132,8 @@ The prompt also requests Markdown headings, bullet lists, blank lines between se
 |   +-- day1_fhir_setup.md
 |   +-- demo_script.md
 |   +-- sample_patient_1_llm_summary.md
+|   +-- screenshots/
+|       +-- README.md
 +-- .env.example
 +-- .gitignore
 +-- README.md

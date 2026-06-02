@@ -2,73 +2,60 @@
 
 This sample was generated from the local InterSystems IRIS for Health FHIR Server using Nebius Token Factory with model `meta-llama/Llama-3.3-70B-Instruct`.
 
-## Patient Overview
+Audience: `ed_doctor`
 
-The patient, Carroll471 O'Hara248, is a 71-year-old male born on June 13, 1954. He is currently alive.
+## Immediate Orientation
 
-## Active Problems
+The patient is a 71-year-old male named Carroll471 O'Hara248, born on 1954-06-13.
 
-- Body mass index 30+ - obesity (finding), onset: September 1, 1991.
+## Active Problems Relevant to This Snapshot
 
-## Medications
+Source data shows one active condition:
 
-There are no active medication requests. However, the patient has the following stopped medication requests:
+- Body mass index 30+ - obesity, with onset in 1991.
 
-- Acetaminophen 325 MG Oral Tablet
-- Naproxen sodium 220 MG Oral Tablet
+## Medication / Allergy Verification
 
-## Allergies
+Medication requests include:
 
-No allergy intolerance records were found.
+- Acetaminophen 325 MG Oral Tablet (stopped)
+- Naproxen sodium 220 MG Oral Tablet (stopped)
 
-## Recent Observations / Labs
+Source data contains no allergy intolerance records.
 
-Recent observations include:
+## Recent Encounters and Observations
 
-- Body Height: 193.3 cm (September 8, 2019, and September 2, 2018)
-- Pain severity: 1 (September 8, 2019) and 2 (September 2, 2018)
-- Body Weight: 113.4 kg (September 8, 2019)
-- Body Mass Index: 30.35 kg/m2 (September 8, 2019)
-- Blood Pressure: Diastolic 82 mm[Hg], Systolic 120.0 mm[Hg] (September 8, 2019)
-- Total Cholesterol: 185.81 mg/dL (September 8, 2019)
-- Triglycerides: 145.21 mg/dL (September 8, 2019)
-- Low Density Lipoprotein Cholesterol: 80.23 mg/dL (September 8, 2019)
-- High Density Lipoprotein Cholesterol: 76.54 mg/dL (September 8, 2019)
-- Tobacco smoking status: Never smoker (September 8, 2019)
+Recent encounters:
 
-## Red Flags / Follow-Up Points
+- Encounter on 2019-09-08 (finished, ambulatory)
+- Encounter on 2019-08-11 (finished, emergency)
+- Encounter on 2018-09-02 (finished, ambulatory)
+- Encounter on 2018-02-16 (finished, ambulatory)
+- Encounter on 2017-08-27 (finished, ambulatory)
 
-The patient has obesity, which is an active condition. Recent encounters include finished ambulatory and emergency visits, but no specific red flags or follow-up points are identified from the provided data.
+Recent observations:
+
+- Vital signs: Body Height 193.3 cm; Pain severity 1; Body Weight 113.4 kg; Body Mass Index 30.35 kg/m2; Blood Pressure Diastolic 82 mm[Hg], Systolic 120.0 mm[Hg]
+- Laboratory results: Total Cholesterol 185.81 mg/dL; Triglycerides 145.21 mg/dL; Low Density Lipoprotein Cholesterol 80.23 mg/dL; High Density Lipoprotein Cholesterol 76.54 mg/dL
+- Survey/social history: Tobacco smoking status Never smoker
+
+## Care Plans Present in Source Data
+
+Care plans include:
+
+- Wound care (completed, 2015-12-16 to 2015-12-30)
+- Wound care (completed, 2019-08-11 to 2019-09-01)
+
+## Source-Data Checks
+
+Source data shows no allergy intolerance records. Only stopped medication requests are present.
 
 ## Missing Information
 
+Missing information identified by deterministic normalizer:
+
 - No allergy intolerance records were found.
-- There is no information on current medications, as all listed medication requests are stopped.
 
 ## Source FHIR Resources Used
 
-- Condition/13
-- Condition/286
-- Condition/322
-- Condition/528
-- Condition/543
-- MedicationRequest/288
-- MedicationRequest/545
-- Observation/532
-- Observation/533
-- Observation/552
-- Observation/553
-- Observation/554
-- Observation/555
-- Observation/556
-- Observation/557
-- Observation/558
-- Observation/559
-- Observation/560
-- Observation/561
-- Patient/1
-- Encounter/325
-- Encounter/527
-- Encounter/531
-- Encounter/542
-- Encounter/551
+In the web UI, source resources are shown in a collapsed expander so the clinical summary stays readable.
