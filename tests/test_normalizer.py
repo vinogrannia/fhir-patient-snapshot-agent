@@ -227,6 +227,26 @@ class NormalizeSnapshotTest(unittest.TestCase):
 
         self.assertIn("120/82 mmHg\n\nRecent laboratory observations:", visible_summary)
 
+    def test_adds_spacing_before_ed_summary_inline_sections(self) -> None:
+        summary = (
+            "Medication/allergy verification\n"
+            "Naproxen sodium 220 MG Oral Tablet The patient has no recorded allergy intolerance records.\n"
+            "Recent encounters and observations\n"
+            "Encounter on 2017-08-27 (AMB class) Recent observations include:\n"
+            "Vital signs: Body Height (193.3 cm)"
+        )
+
+        visible_summary = _clean_summary_markdown(summary)
+
+        self.assertIn(
+            "Naproxen sodium 220 MG Oral Tablet\n\nThe patient has no recorded allergy intolerance records.",
+            visible_summary,
+        )
+        self.assertIn(
+            "Encounter on 2017-08-27 (AMB class)\n\nRecent observations include:",
+            visible_summary,
+        )
+
     def test_removes_inline_resource_id_prefixes_from_ui_summary(self) -> None:
         summary = "\n".join(
             [

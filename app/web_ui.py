@@ -156,10 +156,12 @@ def _clean_summary_markdown(markdown: str) -> str:
         "Recent vital-sign observations:",
         "Recent laboratory observations:",
         "Recent survey/social history observations:",
+        "Recent observations include:",
         "Other recent observations:",
         "Recent encounters:",
         "Medications:",
         "Allergies:",
+        "The patient has no recorded allergy intolerance records.",
     ]
     for label in subsection_labels:
         cleaned = re.sub(rf"(?<!\n\n)\s+({re.escape(label)})", rf"\n\n\1", cleaned)
