@@ -79,6 +79,7 @@ This project is for demonstration purposes only. It does not provide diagnosis, 
 - Deterministic Markdown summary mode
 - LLM-ready prompt mode
 - Nebius/OpenAI-compatible LLM summary mode
+- Streamlit web UI for patient ID entry and summary display
 - Unit tests for normalisation and LLM response parsing
 - Sample LLM output for Patient `1`
 
@@ -93,6 +94,7 @@ This project is for demonstration purposes only. It does not provide diagnosis, 
 |   +-- prompt_builder.py
 |   +-- summary_renderer.py
 |   +-- snapshot_demo.py
+|   +-- web_ui.py
 +-- tests/
 |   +-- test_normalizer.py
 +-- docs/
@@ -200,6 +202,12 @@ Return only resource counts:
 python -m app.snapshot_demo 1 --format counts
 ```
 
+Run the Streamlit web UI:
+
+```powershell
+streamlit run app/web_ui.py
+```
+
 Sample output: `docs/sample_patient_1_llm_summary.md`
 
 Demo walkthrough: `docs/demo_script.md`
@@ -221,12 +229,12 @@ Working prototype:
 - Deterministic summary mode works
 - LLM prompt mode works
 - Nebius Token Factory LLM summary mode works
+- Streamlit web UI is available
 - Tests pass
 
 ## Roadmap
 
-1. Add a small web UI for patient ID entry and summary display.
-2. Improve observation grouping for vitals, labs, and survey observations.
-3. Add more tests with saved FHIR fixture bundles.
-4. Add screenshots or a short recorded video demo.
-5. Decide whether to embed Docker/FHIR setup in this repo or keep the InterSystems template as an external setup step.
+1. Improve observation grouping for vitals, labs, and survey observations.
+2. Add more tests with saved FHIR fixture bundles.
+3. Add screenshots or a short recorded video demo.
+4. Decide whether to embed Docker/FHIR setup in this repo or keep the InterSystems template as an external setup step.

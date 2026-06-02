@@ -102,7 +102,28 @@ Explain:
 - The generated summary is grounded in FHIR resources retrieved from IRIS.
 - The output includes patient overview, active problems, medications, allergies, recent observations, red flags, missing information, and source resources used.
 
-## 7. Close With Safety Framing
+## 7. Show the Web UI
+
+Run:
+
+```powershell
+streamlit run app/web_ui.py
+```
+
+Open the local Streamlit URL, usually:
+
+```text
+http://localhost:8501
+```
+
+Explain:
+
+- The web UI provides a simple patient ID input.
+- The user can choose deterministic summary, LLM summary, or LLM prompt preview.
+- The result panel shows the generated patient snapshot.
+- The source resource expander lists the FHIR resources used for verification.
+
+## 8. Close With Safety Framing
 
 Mention:
 
