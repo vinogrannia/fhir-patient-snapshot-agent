@@ -9,6 +9,8 @@ from app.summary_renderer import SAFETY_NOTE
 SYSTEM_INSTRUCTIONS = """You are a clinical summarisation assistant.
 Your task is to summarise provided FHIR source data only.
 Do not diagnose, recommend treatment, or infer facts not present in the source context.
+Do not write clinical advice, care plans, monitoring recommendations, or treatment follow-up instructions.
+If the source data contains possible concerns, describe them as source-data verification points only.
 When information is missing, say that it is missing.
 Always include a source resource list so the output can be verified."""
 
@@ -28,9 +30,14 @@ def build_snapshot_prompt(context: PatientSnapshotContext) -> str:
             "- Medications",
             "- Allergies",
             "- Recent observations/labs",
-            "- Red flags/follow-up points from source data only",
+            "- Source-data verification points, not recommendations",
             "- Missing information",
             "- Source FHIR resources used",
+            "",
+            "Rules:",
+            "- Do not recommend monitoring, treatment, medication changes, referrals, or follow-up actions.",
+            "- Do not say that a condition requires action unless the source data explicitly says so.",
+            "- Use wording such as 'source data shows' or 'verify in source data' instead of clinical advice.",
             "",
             "Source context:",
             _source_context(context),

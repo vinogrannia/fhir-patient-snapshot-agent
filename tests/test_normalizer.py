@@ -96,6 +96,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
         prompt = build_snapshot_prompt(normalize_snapshot(raw))
 
         self.assertIn("does not diagnose", prompt)
+        self.assertIn("Do not recommend monitoring", prompt)
         self.assertIn("Source FHIR resources", prompt)
         self.assertIn("Patient/1", prompt)
 

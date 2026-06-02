@@ -69,6 +69,10 @@ def main() -> None:
         return
 
     _render_context_metrics(result.context)
+    st.info(
+        "Summary for demonstration only. Verify all generated content against the listed "
+        "FHIR resources before any clinical use."
+    )
 
     if mode == "prompt" and result.system_instructions:
         st.subheader("System Instructions")
