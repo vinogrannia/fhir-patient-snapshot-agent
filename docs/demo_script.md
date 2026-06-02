@@ -107,7 +107,7 @@ Explain:
 Run:
 
 ```powershell
-streamlit run app/web_ui.py
+py -m streamlit run app/web_ui.py
 ```
 
 Open the local Streamlit URL, usually:

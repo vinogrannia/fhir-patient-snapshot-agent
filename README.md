@@ -173,7 +173,7 @@ On Windows PowerShell:
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+py -m pip install -r requirements.txt
 ```
 
 ## Run
@@ -205,7 +205,7 @@ python -m app.snapshot_demo 1 --format counts
 Run the Streamlit web UI:
 
 ```powershell
-streamlit run app/web_ui.py
+py -m streamlit run app/web_ui.py
 ```
 
 Sample output: `docs/sample_patient_1_llm_summary.md`

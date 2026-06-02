@@ -85,6 +85,8 @@ def main() -> None:
 
 
 def _render_landing_state() -> None:
+    fhir_client = FhirClient.from_env()
+
     st.subheader("Generate a patient snapshot")
     st.write(
         "Enter a FHIR Patient ID in the sidebar, choose a summary mode, and generate a "
@@ -93,7 +95,7 @@ def _render_landing_state() -> None:
 
     cols = st.columns(3)
     cols[0].metric("Verified Patient", "1")
-    cols[1].metric("FHIR Host Port", "32783")
+    cols[1].metric("FHIR Base URL", fhir_client.base_url)
     cols[2].metric("LLM Provider", "Nebius")
 
 
