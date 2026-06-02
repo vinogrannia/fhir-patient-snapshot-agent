@@ -247,6 +247,20 @@ class NormalizeSnapshotTest(unittest.TestCase):
             visible_summary,
         )
 
+    def test_adds_spacing_before_short_recent_observations_heading(self) -> None:
+        summary = (
+            "Recent encounters and observations\n"
+            "Encounter on 2017-08-27 (finished, ambulatory) Recent observations:\n"
+            "Vital signs: Body Height (193.3 cm)"
+        )
+
+        visible_summary = _clean_summary_markdown(summary)
+
+        self.assertIn(
+            "Encounter on 2017-08-27 (finished, ambulatory)\n\nRecent observations:",
+            visible_summary,
+        )
+
     def test_removes_inline_resource_id_prefixes_from_ui_summary(self) -> None:
         summary = "\n".join(
             [

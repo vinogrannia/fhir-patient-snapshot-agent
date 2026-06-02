@@ -157,6 +157,7 @@ def _clean_summary_markdown(markdown: str) -> str:
         "Recent laboratory observations:",
         "Recent survey/social history observations:",
         "Recent observations include:",
+        "Recent observations:",
         "Other recent observations:",
         "Recent encounters:",
         "Medications:",
