@@ -77,6 +77,8 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertEqual(context.active_conditions[0].name, "Body mass index 30+ - obesity (finding)")
         self.assertEqual(context.medications[0].name, "Acetaminophen 325 MG Oral Tablet")
         self.assertEqual(context.recent_observations[0].value, "30.35 kg/m2")
+        self.assertEqual(context.observation_groups.vitals[0].name, "Body Mass Index")
+        self.assertEqual(context.observation_groups.labs, [])
         self.assertIn("No allergy intolerance records were found.", context.missing_information)
 
     def test_builds_prompt_with_safety_constraints(self) -> None:
@@ -97,6 +99,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
 
         self.assertIn("does not diagnose", prompt)
         self.assertIn("Do not recommend monitoring", prompt)
+        self.assertIn("Recent vital-sign observations", prompt)
         self.assertIn("Source FHIR resources", prompt)
         self.assertIn("Patient/1", prompt)
 

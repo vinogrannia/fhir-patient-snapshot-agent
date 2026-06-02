@@ -49,17 +49,29 @@ def render_markdown_summary(context: PatientSnapshotContext) -> str:
         "",
         *_allergy_lines(context.allergies),
         "",
-        "## Recent Observations / Labs",
+        "## Recent Vitals",
         "",
-        *_observation_lines(context.recent_observations),
+        *_observation_lines(context.observation_groups.vitals),
+        "",
+        "## Recent Labs",
+        "",
+        *_observation_lines(context.observation_groups.labs),
+        "",
+        "## Survey / Social History Observations",
+        "",
+        *_observation_lines(context.observation_groups.surveys),
+        "",
+        "## Other Recent Observations",
+        "",
+        *_observation_lines(context.observation_groups.other),
         "",
         "## Recent Encounters",
         "",
         *_encounter_lines(context.recent_encounters),
         "",
-        "## Red Flags / Follow-Up Points",
+        "## Source-Data Verification Points",
         "",
-        *_red_flag_lines(context),
+        *_verification_point_lines(context),
         "",
         "## Missing Information",
         "",
@@ -125,7 +137,7 @@ def _encounter_lines(encounters: list[EncounterSummary]) -> list[str]:
     ]
 
 
-def _red_flag_lines(context: PatientSnapshotContext) -> list[str]:
+def _verification_point_lines(context: PatientSnapshotContext) -> list[str]:
     lines = []
     active_names = {item.name.lower() for item in context.active_conditions}
     recent_observation_names = {item.name.lower(): item for item in context.recent_observations}
@@ -140,7 +152,7 @@ def _red_flag_lines(context: PatientSnapshotContext) -> list[str]:
     if not context.allergies:
         lines.append("- Allergy list is empty; confirm whether this means no known allergies or missing documentation.")
 
-    return lines or ["- No deterministic red flags identified from the normalized source data."]
+    return lines or ["- No deterministic verification points identified from the normalized source data."]
 
 
 def _source_lines(context: PatientSnapshotContext) -> list[str]:

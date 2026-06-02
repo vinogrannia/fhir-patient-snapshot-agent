@@ -64,6 +64,14 @@ class ObservationSummary:
 
 
 @dataclass(frozen=True)
+class ObservationGroups:
+    vitals: list[ObservationSummary]
+    labs: list[ObservationSummary]
+    surveys: list[ObservationSummary]
+    other: list[ObservationSummary]
+
+
+@dataclass(frozen=True)
 class EncounterSummary:
     id: str
     status: str
@@ -80,6 +88,7 @@ class PatientSnapshotContext:
     medications: list[MedicationSummary]
     allergies: list[AllergySummary]
     recent_observations: list[ObservationSummary]
+    observation_groups: ObservationGroups
     recent_encounters: list[EncounterSummary]
     missing_information: list[str]
     source_resources: list[SourceRef]
@@ -96,6 +105,7 @@ def normalize_snapshot(raw: dict[str, Any], recent_observation_limit: int = 12) 
     encounters = [_normalize_encounter(item) for item in bundle_entries(raw["encounters"])]
 
     observations = sorted(observations, key=lambda item: item.effective, reverse=True)
+    recent_observations = observations[:recent_observation_limit]
     encounters = sorted(encounters, key=lambda item: item.start, reverse=True)
 
     active_conditions = [
@@ -119,7 +129,8 @@ def normalize_snapshot(raw: dict[str, Any], recent_observation_limit: int = 12) 
         resolved_conditions=resolved_conditions,
         medications=medications,
         allergies=allergies,
-        recent_observations=observations[:recent_observation_limit],
+        recent_observations=recent_observations,
+        observation_groups=_group_observations(recent_observations),
         recent_encounters=encounters[:5],
         missing_information=missing_information,
         source_resources=_source_resources(raw),
@@ -197,6 +208,31 @@ def _normalize_encounter(resource: dict[str, Any]) -> EncounterSummary:
         class_code=_string(class_value.get("code") or class_value.get("display")),
         start=_string(period.get("start")),
         end=_string(period.get("end")),
+    )
+
+
+def _group_observations(observations: list[ObservationSummary]) -> ObservationGroups:
+    vitals: list[ObservationSummary] = []
+    labs: list[ObservationSummary] = []
+    surveys: list[ObservationSummary] = []
+    other: list[ObservationSummary] = []
+
+    for observation in observations:
+        category = observation.category.lower()
+        if category == "vital-signs":
+            vitals.append(observation)
+        elif category == "laboratory":
+            labs.append(observation)
+        elif category == "survey":
+            surveys.append(observation)
+        else:
+            other.append(observation)
+
+    return ObservationGroups(
+        vitals=vitals,
+        labs=labs,
+        surveys=surveys,
+        other=other,
     )
 
 

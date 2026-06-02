@@ -78,6 +78,7 @@ The LLM prompt explicitly prohibits care plans, monitoring recommendations, medi
 - Local `.env` loading without external dependencies
 - Patient snapshot resource fetch across Patient, Condition, MedicationRequest, AllergyIntolerance, Observation, and Encounter
 - FHIR Bundle extraction and clinical context normalisation
+- Observation grouping for recent vitals, labs, survey/social history, and other observations
 - Deterministic Markdown summary mode
 - LLM-ready prompt mode
 - Nebius/OpenAI-compatible LLM summary mode
@@ -228,6 +229,7 @@ Working prototype:
 
 - Local InterSystems IRIS for Health FHIR Server verified
 - Patient `1` verified with 5 conditions, 2 medication requests, 0 allergy records, 88 observations, and 14 encounters
+- Recent observations are grouped into vitals, labs, survey/social history, and other observations
 - Deterministic summary mode works
 - LLM prompt mode works
 - Nebius Token Factory LLM summary mode works
@@ -236,7 +238,6 @@ Working prototype:
 
 ## Roadmap
 
-1. Improve observation grouping for vitals, labs, and survey observations.
-2. Add more tests with saved FHIR fixture bundles.
-3. Add screenshots or a short recorded video demo.
-4. Decide whether to embed Docker/FHIR setup in this repo or keep the InterSystems template as an external setup step.
+1. Add more tests with saved FHIR fixture bundles.
+2. Add screenshots or a short recorded video demo.
+3. Decide whether to embed Docker/FHIR setup in this repo or keep the InterSystems template as an external setup step.
