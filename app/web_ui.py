@@ -168,6 +168,7 @@ def _clean_summary_markdown(markdown: str) -> str:
     for label in subsection_labels:
         cleaned = re.sub(rf"(?<!\n\n)\s+({re.escape(label)})", rf"\n\n\1", cleaned)
 
+    cleaned = _add_missing_bullets_after_colon_labels(cleaned)
     return cleaned.rstrip()
 
 
@@ -177,6 +178,35 @@ def _without_inline_resource_ids(markdown: str) -> str:
         "",
         markdown,
     )
+
+
+def _add_missing_bullets_after_colon_labels(markdown: str) -> str:
+    lines = markdown.splitlines()
+    fixed: list[str] = []
+    in_colon_list = False
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            fixed.append(line)
+            continue
+
+        if in_colon_list and _looks_like_unbulleted_list_item(stripped):
+            fixed.append(f"- {stripped}")
+            continue
+
+        fixed.append(line)
+        in_colon_list = stripped.endswith(":")
+
+    return "\n".join(fixed)
+
+
+def _looks_like_unbulleted_list_item(text: str) -> bool:
+    if text.startswith(("-", "*", "#")):
+        return False
+    if text.endswith(":"):
+        return False
+    return True
 
 
 if __name__ == "__main__":

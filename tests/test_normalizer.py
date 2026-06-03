@@ -123,6 +123,8 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("Source-data notes", prompt)
         self.assertIn("Do not use imperative verbs", prompt)
         self.assertIn("Use Markdown headings for each required section", prompt)
+        self.assertIn("Use Markdown bullet lists with '- '", prompt)
+        self.assertIn("Do not write a subsection label followed by a blank line and then unbulleted list items", prompt)
         self.assertIn("Put a blank line before every section heading", prompt)
         self.assertIn("Do not copy raw source-context lines verbatim", prompt)
         self.assertIn("Do not include FHIR resource IDs in narrative sections", prompt)
@@ -290,6 +292,21 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("Body Mass Index, 30.35 kg/m2", visible_summary)
         self.assertNotIn("Condition/13", visible_summary)
         self.assertNotIn("Observation/555", visible_summary)
+
+    def test_adds_missing_bullets_after_colon_labels(self) -> None:
+        summary = "\n".join(
+            [
+                "Resolved conditions:",
+                "",
+                "Laceration of foot, resolved by 2015-12-30",
+                "Viral sinusitis, resolved by 2016-10-19",
+            ]
+        )
+
+        visible_summary = _clean_summary_markdown(summary)
+
+        self.assertIn("- Laceration of foot, resolved by 2015-12-30", visible_summary)
+        self.assertIn("- Viral sinusitis, resolved by 2016-10-19", visible_summary)
 
 
 if __name__ == "__main__":
