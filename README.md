@@ -141,10 +141,9 @@ The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary au
 |   +-- demo_script.md
 |   +-- sample_patient_1_llm_summary.md
 |   +-- screenshots/
-    |   +-- README.md
-    |   +-- streamlit_ed_summary_top.png
-    |   +-- streamlit_ed_summary_middle.png
-    |   +-- streamlit_ed_summary_bottom.png
+|       +-- streamlit_ed_summary_top.png
+|       +-- streamlit_ed_summary_middle.png
+|       +-- streamlit_ed_summary_bottom.png
 +-- .env.example
 +-- .gitignore
 +-- README.md
@@ -269,7 +268,7 @@ Demo walkthrough: `docs/demo_script.md`
 Run tests:
 
 ```bash
-python -m unittest
+python -m unittest discover -s tests
 ```
 
 ## Status

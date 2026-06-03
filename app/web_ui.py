@@ -205,7 +205,7 @@ def _without_inline_resource_ids(markdown: str) -> str:
 
 
 def _without_empty_bullet_lines(markdown: str) -> str:
-    return re.sub(r"(?m)^\s*[-*•]\s*$\n?", "", markdown)
+    return re.sub("(?m)^\\s*[-*\\u2022]\\s*$\\n?", "", markdown)
 
 
 def _add_missing_bullets_after_colon_labels(markdown: str) -> str:

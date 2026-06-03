@@ -2,6 +2,21 @@
 
 This script can be used for a short contest video demo or a written project walkthrough.
 
+## Short Video Narrative
+
+Use this as the spoken structure for a 2-3 minute demo:
+
+1. "This project is FHIR Patient Snapshot Agent, a Smart Patient Summary Generator for the InterSystems AI Agents and FHIR Programming Contest."
+2. "The app uses InterSystems IRIS for Health as the FHIR interoperability layer. It does not read local clinical files directly; it queries FHIR R4 JSON resources from the IRIS FHIR API."
+3. "For Patient 1, the agent retrieves Patient, Condition, MedicationRequest, AllergyIntolerance, Observation, Encounter, and CarePlan resources."
+4. "The Python layer normalises those resources into a structured patient context, groups observations into vitals, labs, survey/social history, and other observations, and keeps source FHIR resource references for verification."
+5. "The app has three modes: deterministic summary, LLM prompt preview, and LLM summary."
+6. "The LLM integration uses Nebius Token Factory through an OpenAI-compatible chat completions API. The configured model is `meta-llama/Llama-3.3-70B-Instruct`."
+7. "The user can choose a role-specific audience: clinician, ED doctor, care manager, patient, or family caregiver. Each audience gets a different section template and wording style."
+8. "The summary is safety-framed. It is for summarisation only, not diagnosis or treatment advice. The prompt prohibits treatment recommendations, new care plans, medication changes, referrals, monitoring advice, and invented missing information."
+9. "The Streamlit UI shows resource counts, the generated patient snapshot, and a collapsed source-resource review so generated content can be checked against the original FHIR data."
+10. "This is an open-source working prototype with tests, sample output, screenshots, and clear local setup instructions."
+
 ## 1. Start the FHIR Server
 
 Open a terminal in the InterSystems FHIR template directory:

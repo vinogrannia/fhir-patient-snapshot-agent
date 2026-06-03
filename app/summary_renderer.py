@@ -74,7 +74,7 @@ def render_markdown_summary(context: PatientSnapshotContext) -> str:
         "",
         *_care_plan_lines(context.care_plans),
         "",
-        "## Source-Data Verification Points",
+        "## Source-Data Checks",
         "",
         *_verification_point_lines(context),
         "",
@@ -165,9 +165,9 @@ def _verification_point_lines(context: PatientSnapshotContext) -> list[str]:
         lines.append(f"- Most recent listed BMI observation: {bmi.value}.")
 
     if not context.allergies:
-        lines.append("- Allergy list is empty; confirm whether this means no known allergies or missing documentation.")
+        lines.append("- No AllergyIntolerance resources were returned in the queried source data.")
 
-    return lines or ["- No deterministic verification points identified from the normalized source data."]
+    return lines or ["- No deterministic source-data checks identified from the normalized source data."]
 
 
 def _source_lines(context: PatientSnapshotContext) -> list[str]:
