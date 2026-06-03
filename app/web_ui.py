@@ -174,6 +174,7 @@ def _without_source_resources_section(markdown: str) -> str:
 def _clean_summary_markdown(markdown: str) -> str:
     cleaned = _without_source_resources_section(markdown)
     cleaned = _without_inline_resource_ids(cleaned)
+    cleaned = _without_empty_bullet_lines(cleaned)
     subsection_labels = [
         "Recent vital-sign observations:",
         "Recent laboratory observations:",
@@ -200,6 +201,10 @@ def _without_inline_resource_ids(markdown: str) -> str:
         "",
         markdown,
     )
+
+
+def _without_empty_bullet_lines(markdown: str) -> str:
+    return re.sub(r"(?m)^\s*[-*]\s*$\n?", "", markdown)
 
 
 def _add_missing_bullets_after_colon_labels(markdown: str) -> str:

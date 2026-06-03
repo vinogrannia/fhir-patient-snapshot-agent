@@ -125,6 +125,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("Use Markdown headings for each required section", prompt)
         self.assertIn("Use Markdown bullet lists with '- '", prompt)
         self.assertIn("Do not write a subsection label followed by a blank line and then unbulleted list items", prompt)
+        self.assertIn("Do not create empty bullet points", prompt)
         self.assertIn("Put a blank line before every section heading", prompt)
         self.assertIn("Do not copy raw source-context lines verbatim", prompt)
         self.assertIn("Do not include FHIR resource IDs in narrative sections", prompt)
@@ -336,6 +337,29 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("- Wound care from August 11, 2019", visible_summary)
         self.assertIn("\nSource-data notes\n", visible_summary)
         self.assertNotIn("- Source-data notes", visible_summary)
+
+    def test_removes_empty_bullet_lines_from_ui_summary(self) -> None:
+        summary = "\n".join(
+            [
+                "Medication/allergy verification",
+                "-",
+                "",
+                "Medications:",
+                "- Acetaminophen 325 MG Oral Tablet (stopped)",
+                "-",
+                "",
+                "Allergies:",
+                "- No allergy intolerance records were found",
+            ]
+        )
+
+        visible_summary = _clean_summary_markdown(summary)
+
+        self.assertIn("Medications:", visible_summary)
+        self.assertIn("- Acetaminophen 325 MG Oral Tablet (stopped)", visible_summary)
+        self.assertIn("Allergies:", visible_summary)
+        self.assertIn("- No allergy intolerance records were found", visible_summary)
+        self.assertNotIn("\n-\n", visible_summary)
 
 
 if __name__ == "__main__":

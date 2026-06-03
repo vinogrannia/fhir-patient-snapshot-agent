@@ -119,6 +119,7 @@ def build_snapshot_prompt(context: PatientSnapshotContext, audience: str = "clin
             "- Use Markdown headings for each required section.",
             "- Use Markdown bullet lists with '- ' for every multi-item list, including conditions, resolved conditions, encounters, observations, medications, allergies, care plans, missing information, and source resources.",
             "- Do not write a subsection label followed by a blank line and then unbulleted list items.",
+            "- Do not create empty bullet points.",
             "- Put a blank line before every section heading and subsection heading.",
             "- Do not copy raw source-context lines verbatim except in the Source FHIR resources used section.",
             "- Do not include FHIR resource IDs in narrative sections.",
