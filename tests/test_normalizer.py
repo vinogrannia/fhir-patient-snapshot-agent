@@ -346,7 +346,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
                 "",
                 "Medications:",
                 "- Acetaminophen 325 MG Oral Tablet (stopped)",
-                "-",
+                "•",
                 "",
                 "Allergies:",
                 "- No allergy intolerance records were found",
@@ -360,6 +360,7 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("Allergies:", visible_summary)
         self.assertIn("- No allergy intolerance records were found", visible_summary)
         self.assertNotIn("\n-\n", visible_summary)
+        self.assertNotIn("\n•\n", visible_summary)
 
 
 if __name__ == "__main__":

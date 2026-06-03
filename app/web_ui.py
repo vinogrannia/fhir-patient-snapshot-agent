@@ -192,6 +192,7 @@ def _clean_summary_markdown(markdown: str) -> str:
         cleaned = re.sub(rf"(?<!\n\n)\s+({re.escape(label)})", rf"\n\n\1", cleaned)
 
     cleaned = _add_missing_bullets_after_colon_labels(cleaned)
+    cleaned = _without_empty_bullet_lines(cleaned)
     return cleaned.rstrip()
 
 
@@ -204,7 +205,7 @@ def _without_inline_resource_ids(markdown: str) -> str:
 
 
 def _without_empty_bullet_lines(markdown: str) -> str:
-    return re.sub(r"(?m)^\s*[-*]\s*$\n?", "", markdown)
+    return re.sub(r"(?m)^\s*[-*•]\s*$\n?", "", markdown)
 
 
 def _add_missing_bullets_after_colon_labels(markdown: str) -> str:
