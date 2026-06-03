@@ -184,6 +184,7 @@ def _add_missing_bullets_after_colon_labels(markdown: str) -> str:
     lines = markdown.splitlines()
     fixed: list[str] = []
     in_colon_list = False
+    colon_list_started = False
 
     for line in lines:
         stripped = line.strip()
@@ -191,12 +192,29 @@ def _add_missing_bullets_after_colon_labels(markdown: str) -> str:
             fixed.append(line)
             continue
 
+        if in_colon_list and _looks_like_section_heading(stripped):
+            fixed.append(line)
+            in_colon_list = stripped.endswith(":")
+            colon_list_started = False
+            continue
+
         if in_colon_list and _looks_like_unbulleted_list_item(stripped):
+            if not colon_list_started and fixed and fixed[-1].strip():
+                fixed.append("")
             fixed.append(f"- {stripped}")
+            colon_list_started = True
+            continue
+
+        if in_colon_list and stripped.startswith(("-", "*")):
+            if not colon_list_started and fixed and fixed[-1].strip():
+                fixed.append("")
+            fixed.append(line)
+            colon_list_started = True
             continue
 
         fixed.append(line)
         in_colon_list = stripped.endswith(":")
+        colon_list_started = False
 
     return "\n".join(fixed)
 
@@ -207,6 +225,35 @@ def _looks_like_unbulleted_list_item(text: str) -> bool:
     if text.endswith(":"):
         return False
     return True
+
+
+def _looks_like_section_heading(text: str) -> bool:
+    headings = {
+        "Patient overview",
+        "Patient snapshot",
+        "Your snapshot",
+        "Immediate orientation",
+        "Active problems",
+        "Active problems relevant to this snapshot",
+        "Health problems listed in the source data",
+        "Medications",
+        "Medication/allergy verification",
+        "Medicines listed in the source data",
+        "Medicines and allergies listed in the source data",
+        "Allergies",
+        "Allergies listed in the source data",
+        "Recent observations/labs",
+        "Recent encounters and observations",
+        "Recent encounters, measurements, and labs",
+        "Recent measurements and lab results",
+        "Care plans",
+        "Care plans present in source data",
+        "Care plans listed in the source data",
+        "Source-data checks",
+        "Source-data notes",
+        "Missing information",
+    }
+    return text.strip("* ") in headings
 
 
 if __name__ == "__main__":

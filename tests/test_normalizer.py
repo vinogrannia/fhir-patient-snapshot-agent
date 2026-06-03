@@ -308,6 +308,35 @@ class NormalizeSnapshotTest(unittest.TestCase):
         self.assertIn("- Laceration of foot, resolved by 2015-12-30", visible_summary)
         self.assertIn("- Viral sinusitis, resolved by 2016-10-19", visible_summary)
 
+    def test_adds_bullets_without_bulleting_next_section_heading(self) -> None:
+        summary = "\n".join(
+            [
+                "Medication/allergy verification",
+                "Medication requests include:",
+                "Acetaminophen 325 MG Oral Tablet",
+                "Naproxen sodium 220 MG Oral Tablet",
+                "Allergies",
+                "Source data contains no allergy intolerance records.",
+                "Care plans listed in the source data",
+                "Completed care plans:",
+                "Wound care from December 16, 2015, to December 30, 2015",
+                "Wound care from August 11, 2019, to September 1, 2019",
+                "Source-data notes",
+                "Only stopped medication requests are present.",
+            ]
+        )
+
+        visible_summary = _clean_summary_markdown(summary)
+
+        self.assertIn("Medication requests include:\n\n- Acetaminophen 325 MG Oral Tablet", visible_summary)
+        self.assertIn("- Naproxen sodium 220 MG Oral Tablet", visible_summary)
+        self.assertIn("\nAllergies\n", visible_summary)
+        self.assertNotIn("- Allergies", visible_summary)
+        self.assertIn("Completed care plans:\n\n- Wound care from December 16, 2015", visible_summary)
+        self.assertIn("- Wound care from August 11, 2019", visible_summary)
+        self.assertIn("\nSource-data notes\n", visible_summary)
+        self.assertNotIn("- Source-data notes", visible_summary)
+
 
 if __name__ == "__main__":
     unittest.main()
