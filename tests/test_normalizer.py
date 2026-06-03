@@ -328,11 +328,11 @@ class NormalizeSnapshotTest(unittest.TestCase):
 
         visible_summary = _clean_summary_markdown(summary)
 
-        self.assertIn("Medication requests include:\n\n- Acetaminophen 325 MG Oral Tablet", visible_summary)
+        self.assertIn("Medication requests include:\n- Acetaminophen 325 MG Oral Tablet", visible_summary)
         self.assertIn("- Naproxen sodium 220 MG Oral Tablet", visible_summary)
         self.assertIn("\nAllergies\n", visible_summary)
         self.assertNotIn("- Allergies", visible_summary)
-        self.assertIn("Completed care plans:\n\n- Wound care from December 16, 2015", visible_summary)
+        self.assertIn("Completed care plans:\n- Wound care from December 16, 2015", visible_summary)
         self.assertIn("- Wound care from August 11, 2019", visible_summary)
         self.assertIn("\nSource-data notes\n", visible_summary)
         self.assertNotIn("- Source-data notes", visible_summary)

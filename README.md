@@ -69,7 +69,7 @@ The LLM prompt explicitly prohibits creating new care plans, monitoring recommen
 
 The Missing Information section is constrained to items identified by the deterministic normalizer, which reduces the risk of the model inventing extra clinical gaps.
 
-The prompt also requests Markdown headings, bullet lists, blank lines between sections, and readable clinical language instead of raw source-context line copying. FHIR resource IDs are kept out of narrative sections and shown in the collapsible source-resource review. The web UI applies display cleanup for common LLM Markdown spacing issues across role-specific summaries, including unbulleted lists after subsection labels.
+The prompt also requests Markdown headings, bullet lists, blank lines between sections, and readable clinical language instead of raw source-context line copying. FHIR resource IDs are kept out of narrative sections and shown in the collapsible source-resource review. The web UI applies compact display cleanup for common LLM Markdown spacing issues across role-specific summaries, including unbulleted lists after subsection labels.
 
 ## Tech Stack
 

@@ -33,6 +33,7 @@ def main() -> None:
 
     st.title("FHIR Patient Snapshot Agent")
     st.caption("Clinical summarisation from InterSystems IRIS for Health FHIR resources")
+    _inject_compact_markdown_css()
 
     with st.sidebar:
         st.header("Snapshot Settings")
@@ -122,6 +123,27 @@ def _render_landing_state() -> None:
     cols[2].metric("LLM Provider", "Nebius")
 
 
+def _inject_compact_markdown_css() -> None:
+    st.markdown(
+        """
+        <style>
+        [data-testid="stMarkdownContainer"] p {
+            margin-bottom: 0.35rem;
+        }
+        [data-testid="stMarkdownContainer"] ul {
+            margin-top: 0.1rem;
+            margin-bottom: 0.45rem;
+            padding-left: 1.25rem;
+        }
+        [data-testid="stMarkdownContainer"] li {
+            margin-bottom: 0.15rem;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def _render_context_metrics(context: PatientSnapshotContext) -> None:
     cols = st.columns(7)
     cols[0].metric("Patient", context.patient.id)
@@ -199,15 +221,11 @@ def _add_missing_bullets_after_colon_labels(markdown: str) -> str:
             continue
 
         if in_colon_list and _looks_like_unbulleted_list_item(stripped):
-            if not colon_list_started and fixed and fixed[-1].strip():
-                fixed.append("")
             fixed.append(f"- {stripped}")
             colon_list_started = True
             continue
 
         if in_colon_list and stripped.startswith(("-", "*")):
-            if not colon_list_started and fixed and fixed[-1].strip():
-                fixed.append("")
             fixed.append(line)
             colon_list_started = True
             continue
