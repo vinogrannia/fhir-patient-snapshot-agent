@@ -6,5 +6,7 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: streamlit run app/web_ui.py --server.address 0.0.0.0 --server.port $PORT
     envVars:
+      - key: PYTHONPATH
+        value: "."
       - key: ONLINE_DEMO_MODE
         value: "1"
