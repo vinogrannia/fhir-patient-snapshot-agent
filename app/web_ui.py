@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import os
 import re
 from typing import Literal
 
 import streamlit as st
 
 from app.agent import PatientSnapshotAgent
+from app.demo_data import demo_agent_result
 from app.fhir_client import FhirClient, FhirClientError
 from app.llm_provider import LlmProviderError
 from app.normalizer import PatientSnapshotContext
@@ -34,10 +36,11 @@ def main() -> None:
     st.title("FHIR Patient Snapshot Agent")
     st.caption("Clinical summarisation from InterSystems IRIS for Health FHIR resources")
     _inject_compact_markdown_css()
+    demo_mode = _online_demo_mode_enabled()
 
     with st.sidebar:
         st.header("Snapshot Settings")
-        patient_id = st.text_input("Patient ID", value="1")
+        patient_id = st.text_input("Patient ID", value="1", disabled=demo_mode)
         mode_label = st.radio(
             "Summary mode",
             options=[
@@ -60,9 +63,14 @@ def main() -> None:
             "This demo summarises source FHIR data only. It does not diagnose, "
             "recommend treatment, or replace clinical judgement."
         )
+        if demo_mode:
+            st.info(
+                "Online demo mode uses bundled Patient 1 data captured from the local "
+                "IRIS for Health FHIR Server demo setup."
+            )
 
     if not generate:
-        _render_landing_state()
+        _render_landing_state(demo_mode)
         return
 
     if not patient_id.strip():
@@ -74,8 +82,11 @@ def main() -> None:
 
     try:
         with st.spinner("Fetching FHIR resources and generating snapshot..."):
-            agent = PatientSnapshotAgent(FhirClient.from_env())
-            result = agent.run(patient_id.strip(), mode=mode, audience=audience)
+            if demo_mode:
+                result = demo_agent_result(mode, audience)
+            else:
+                agent = PatientSnapshotAgent(FhirClient.from_env())
+                result = agent.run(patient_id.strip(), mode=mode, audience=audience)
     except FhirClientError as exc:
         st.error("FHIR request failed.")
         st.code(str(exc), language="text")
@@ -86,6 +97,8 @@ def main() -> None:
         return
 
     _render_context_metrics(result.context)
+    if demo_mode:
+        st.caption("Online demo mode: bundled Patient 1 context from the local IRIS for Health FHIR Server demo setup.")
     if mode in {"prompt", "llm"}:
         st.caption(f"LLM summary audience: {audience_label}")
     st.info(
@@ -108,19 +121,29 @@ def main() -> None:
                 st.write(f"- {source.resource_type}/{source.resource_id}")
 
 
-def _render_landing_state() -> None:
+def _online_demo_mode_enabled() -> bool:
+    return os.getenv("ONLINE_DEMO_MODE", "").strip().lower() in {"1", "true", "yes"}
+
+
+def _render_landing_state(demo_mode: bool = False) -> None:
     fhir_client = FhirClient.from_env()
 
     st.subheader("Generate a patient snapshot")
-    st.write(
-        "Enter a FHIR Patient ID in the sidebar, choose a summary mode, and generate a "
-        "snapshot from the local InterSystems IRIS for Health FHIR Server."
-    )
+    if demo_mode:
+        st.write(
+            "Choose a summary mode and generate a public demo snapshot from bundled "
+            "Patient 1 data captured from the local InterSystems IRIS for Health FHIR Server setup."
+        )
+    else:
+        st.write(
+            "Enter a FHIR Patient ID in the sidebar, choose a summary mode, and generate a "
+            "snapshot from the local InterSystems IRIS for Health FHIR Server."
+        )
 
     cols = st.columns(3)
     cols[0].metric("Verified Patient", "1")
-    cols[1].metric("FHIR Base URL", fhir_client.base_url)
-    cols[2].metric("LLM Provider", "Nebius")
+    cols[1].metric("FHIR Source", "Bundled demo" if demo_mode else fhir_client.base_url)
+    cols[2].metric("LLM Provider", "Sample output" if demo_mode else "Nebius")
 
 
 def _inject_compact_markdown_css() -> None:

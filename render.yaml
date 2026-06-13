@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: fhir-patient-snapshot-agent
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app/web_ui.py --server.address 0.0.0.0 --server.port $PORT
+    envVars:
+      - key: ONLINE_DEMO_MODE
+        value: "1"

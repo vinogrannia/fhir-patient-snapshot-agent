@@ -114,6 +114,8 @@ The current demo uses Patient `1` from the local InterSystems IRIS for Health FH
 
 YouTube video demo: https://youtu.be/Hsu10Nnujng
 
+Online demo deployment is supported through `render.yaml`. For public hosting, set `ONLINE_DEMO_MODE=1`. In this mode the Streamlit app uses a bundled Patient `1` demo context captured from the local IRIS for Health FHIR Server setup, so the public app does not need access to a local `localhost` FHIR endpoint or a private LLM API key. The full live FHIR workflow still runs locally against InterSystems IRIS for Health as described below.
+
 Verified resource counts:
 
 - Patient: 1
@@ -161,6 +163,7 @@ The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary au
 +-- .env.example
 +-- .gitignore
 +-- README.md
++-- render.yaml
 +-- requirements.txt
 ```
 
@@ -270,6 +273,13 @@ python -m app.snapshot_demo 1 --format counts
 Run the Streamlit web UI:
 
 ```powershell
+py -m streamlit run app/web_ui.py
+```
+
+Run the Streamlit web UI in public online demo mode:
+
+```powershell
+$env:ONLINE_DEMO_MODE="1"
 py -m streamlit run app/web_ui.py
 ```
 
