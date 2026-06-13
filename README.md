@@ -96,6 +96,18 @@ The prompt also requests Markdown headings, bullet lists, blank lines between se
 - Unit tests for normalisation and LLM response parsing
 - Sample LLM output for Patient `1`
 
+## Contest Bonus Features
+
+This project is designed to align closely with the InterSystems AI Agents and FHIR Programming Contest goals:
+
+- Suggested task fit: implements the Smart Patient Summary Generator / FHIR Patient Snapshot Agent idea from the contest prompt.
+- InterSystems usage: uses InterSystems IRIS for Health as the local FHIR R4 server and source system for patient resources.
+- AI usage: calls an LLM through Nebius Token Factory using an OpenAI-compatible chat completions API.
+- Model used: `meta-llama/Llama-3.3-70B-Instruct`.
+- Docker usage: Docker is used to run the local InterSystems IRIS for Health FHIR Server through the external InterSystems community FHIR template. The Python/Streamlit application itself is not containerised in this repository.
+- Demo readiness: includes screenshots, sample output, and a demo script intended for a YouTube video walkthrough of the working app.
+- First-time contribution: structured as a clear, beginner-friendly open-source contest submission with setup steps, safety framing, tests, and reproducible local commands.
+
 ## Demo Preview
 
 The current demo uses Patient `1` from the local InterSystems IRIS for Health FHIR Server.
