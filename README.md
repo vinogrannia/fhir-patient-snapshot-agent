@@ -105,7 +105,7 @@ This project is designed to align closely with the InterSystems AI Agents and FH
 - AI usage: calls an LLM through Nebius Token Factory using an OpenAI-compatible chat completions API.
 - Model used: `meta-llama/Llama-3.3-70B-Instruct`.
 - Docker usage: Docker is used to run the local InterSystems IRIS for Health FHIR Server through the external InterSystems community FHIR template. The Python/Streamlit application itself is not containerised in this repository.
-- Demo readiness: includes screenshots, sample output, a demo script, and a YouTube video walkthrough of the working app.
+- Demo readiness: includes screenshots, sample output, a demo script, a YouTube video walkthrough, and a hosted online demo of the working app.
 - First-time contribution: structured as a clear, beginner-friendly open-source contest submission with setup steps, safety framing, tests, and reproducible local commands.
 
 ## Demo Preview
@@ -113,6 +113,8 @@ This project is designed to align closely with the InterSystems AI Agents and FH
 The current demo uses Patient `1` from the local InterSystems IRIS for Health FHIR Server.
 
 YouTube video demo: https://youtu.be/Hsu10Nnujng
+
+Online demo: https://fhir-patient-snapshot-agent.onrender.com/
 
 Online demo deployment is supported through `render.yaml`. For public hosting, set `ONLINE_DEMO_MODE=1`. In this mode the Streamlit app uses a bundled Patient `1` demo context captured from the local IRIS for Health FHIR Server setup, so the public app does not need access to a local `localhost` FHIR endpoint or a private LLM API key. The full live FHIR workflow still runs locally against InterSystems IRIS for Health as described below.
 
