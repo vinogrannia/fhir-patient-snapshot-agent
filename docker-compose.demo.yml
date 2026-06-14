@@ -1,0 +1,7 @@
+services:
+  patient-snapshot-demo:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      ONLINE_DEMO_MODE: "1"

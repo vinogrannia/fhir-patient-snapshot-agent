@@ -104,7 +104,7 @@ This project is designed to align closely with the InterSystems AI Agents and FH
 - InterSystems usage: uses InterSystems IRIS for Health as the local FHIR R4 server and source system for patient resources.
 - AI usage: calls an LLM through Nebius Token Factory using an OpenAI-compatible chat completions API.
 - Model used: `meta-llama/Llama-3.3-70B-Instruct`.
-- Docker usage: Docker is used to run the local InterSystems IRIS for Health FHIR Server through the external InterSystems community FHIR template. The Python/Streamlit application itself is not containerised in this repository.
+- Docker usage: Docker is used in two places: the local InterSystems IRIS for Health FHIR Server runs through the external InterSystems community FHIR template, and this repository includes a Dockerfile plus `docker-compose.demo.yml` for running the Python/Streamlit online demo mode.
 - Demo readiness: includes screenshots, sample output, a demo script, a YouTube video walkthrough, and a hosted online demo of the working app.
 - First-time contribution: structured as a clear, beginner-friendly open-source contest submission with setup steps, safety framing, tests, and reproducible local commands.
 
@@ -164,7 +164,9 @@ The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary au
 |       +-- streamlit_ed_summary_bottom.png
 +-- .env.example
 +-- .gitignore
++-- Dockerfile
 +-- README.md
++-- docker-compose.demo.yml
 +-- render.yaml
 +-- requirements.txt
 ```
@@ -284,6 +286,14 @@ Run the Streamlit web UI in public online demo mode:
 $env:ONLINE_DEMO_MODE="1"
 py -m streamlit run app/web_ui.py
 ```
+
+Run the Streamlit online demo mode with Docker:
+
+```bash
+docker compose -f docker-compose.demo.yml up --build
+```
+
+Then open `http://localhost:8501`.
 
 Sample output: `docs/sample_patient_1_llm_summary.md`
 
