@@ -99,6 +99,32 @@ Then the app is available at:
 http://localhost:8501
 ```
 
+## Small Documentation Note Found During Setup
+
+While setting up the local InterSystems community FHIR template, I noticed a small documentation point that may affect first-time users.
+
+The template README shows FHIR API test URLs such as:
+
+```text
+http://localhost:32783/fhir/r4/metadata
+http://localhost:32783/fhir/r4/Patient/1
+```
+
+In my local Docker setup, unauthenticated requests returned:
+
+```text
+HTTP/1.1 401 Unauthorized
+```
+
+The same endpoints worked when Basic Auth was provided:
+
+```powershell
+curl.exe -i -u _SYSTEM:SYS http://localhost:32783/fhir/r4/metadata
+curl.exe -i -u _SYSTEM:SYS http://localhost:32783/fhir/r4/Patient/1
+```
+
+This looks like a small documentation improvement opportunity: adding an authenticated `curl` example and a note about checking the mapped Docker host port with `docker ps` would make the first FHIR API verification step clearer.
+
 ## Why This Project Is Useful
 
 FHIR systems often contain the right information, but the information is spread across many resources. A patient snapshot can help a user quickly understand what is available in the source data before reviewing details.
