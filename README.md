@@ -106,6 +106,7 @@ This project is designed to align closely with the InterSystems AI Agents and FH
 - Model used: `meta-llama/Llama-3.3-70B-Instruct`.
 - Docker usage: Docker is used in two places: the local InterSystems IRIS for Health FHIR Server runs through the external InterSystems community FHIR template, and this repository includes a Dockerfile plus `docker-compose.demo.yml` for running the Python/Streamlit online demo mode.
 - Demo readiness: includes screenshots, sample output, a demo script, a YouTube video walkthrough, and a hosted online demo of the working app.
+- Documentation feedback: reported a FHIR template README improvement suggestion for authenticated FHIR API verification examples: https://github.com/intersystems-community/iris-fhir-template/issues/37
 - First-time contribution: structured as a clear, beginner-friendly open-source contest submission with setup steps, safety framing, tests, and reproducible local commands.
 
 ## Demo Preview
@@ -158,6 +159,7 @@ The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary au
 |   +-- day1_fhir_setup.md
 |   +-- demo_script.md
 |   +-- developer_community_article.md
+|   +-- fhir_template_issue.md
 |   +-- sample_patient_1_llm_summary.md
 |   +-- screenshots/
 |       +-- streamlit_ed_summary_top.png
