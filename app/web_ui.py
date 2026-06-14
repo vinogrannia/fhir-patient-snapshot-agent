@@ -4,9 +4,13 @@ from __future__ import annotations
 
 import os
 import re
+import sys
+from pathlib import Path
 from typing import Literal
 
 import streamlit as st
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.agent import PatientSnapshotAgent
 from app.demo_data import demo_agent_result
