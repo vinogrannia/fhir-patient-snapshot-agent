@@ -157,6 +157,7 @@ The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary au
 +-- docs/
 |   +-- day1_fhir_setup.md
 |   +-- demo_script.md
+|   +-- developer_community_article.md
 |   +-- sample_patient_1_llm_summary.md
 |   +-- screenshots/
 |       +-- streamlit_ed_summary_top.png
@@ -298,6 +299,8 @@ Then open `http://localhost:8501`.
 Sample output: `docs/sample_patient_1_llm_summary.md`
 
 Demo walkthrough: `docs/demo_script.md`
+
+Developer Community article draft: `docs/developer_community_article.md`
 
 ## Tests
 
