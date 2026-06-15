@@ -18,6 +18,7 @@ from app.demo_data import demo_agent_result
 from app.fhir_client import FhirClient, FhirClientError
 from app.llm_provider import LlmProviderError
 from app.normalizer import PatientSnapshotContext
+from app.vector_search import search_snapshot_context
 
 
 UiMode = Literal["deterministic", "prompt", "llm"]
@@ -103,6 +104,7 @@ def main() -> None:
 
     _render_context_metrics(result.context)
     _render_observation_visuals(result.context)
+    _render_source_context_search(result.context)
     if demo_mode:
         st.caption("Online demo mode: bundled Patient 1 context from the local IRIS for Health FHIR Server demo setup.")
     if mode in {"prompt", "llm"}:
@@ -213,6 +215,20 @@ def _first_numeric_value(text: str) -> float | None:
     if not match:
         return None
     return float(match.group(0))
+
+
+def _render_source_context_search(context: PatientSnapshotContext) -> None:
+    st.subheader("Source Context Vector Search")
+    st.caption("Search normalized patient snapshot sections using simple cosine vector similarity.")
+    query = st.text_input("Search patient context", value="medications allergies labs")
+    hits = search_snapshot_context(context, query)
+    if not hits:
+        st.write("No matching snapshot sections found.")
+        return
+
+    for hit in hits:
+        with st.expander(f"{hit.title} - score {hit.score:.2f}", expanded=False):
+            st.write(hit.text)
 
 
 def _agent_mode(mode_label: str) -> UiMode:

@@ -94,6 +94,8 @@ The prompt also requests Markdown headings, bullet lists, blank lines between se
 - UI cleanup that keeps FHIR resource IDs out of the narrative summary while preserving them in source review
 - Streamlit web UI for patient ID entry, summary display, and collapsible source-resource review
 - Observation visuals for numeric FHIR Observation values in the Streamlit UI
+- Source context vector search over normalized patient snapshot sections
+- Embedded Python demo class for IRIS-compatible package review
 - Unit tests for normalisation and LLM response parsing
 - Sample LLM output for Patient `1`
 
@@ -104,6 +106,8 @@ This project is designed to align closely with the InterSystems AI Agents and FH
 - Suggested task fit: implements the Smart Patient Summary Generator / FHIR Patient Snapshot Agent idea from the contest prompt.
 - Developer Community Idea fit: includes observation visuals related to DPI-I-388, "Custom Visualizations for Physicians": https://ideas.intersystems.com/ideas/DPI-I-388
 - InterSystems usage: uses InterSystems IRIS for Health as the local FHIR R4 server and source system for patient resources.
+- Vector Search usage: includes source context vector search over normalized patient snapshot sections in the Streamlit UI.
+- Embedded Python usage: includes `src/FHIR/Snapshot/EmbeddedPythonDemo.cls`, an IRIS class with an Embedded Python method for extracting numeric observation values.
 - AI usage: calls an LLM through Nebius Token Factory using an OpenAI-compatible chat completions API.
 - Model used: `meta-llama/Llama-3.3-70B-Instruct`.
 - Docker usage: Docker is used in two places: the local InterSystems IRIS for Health FHIR Server runs through the external InterSystems community FHIR template, and this repository includes a Dockerfile plus `docker-compose.demo.yml` for running the Python/Streamlit online demo mode.
@@ -158,9 +162,15 @@ The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary au
 |   +-- prompt_builder.py
 |   +-- summary_renderer.py
 |   +-- snapshot_demo.py
+|   +-- vector_search.py
 |   +-- web_ui.py
 +-- tests/
 |   +-- test_normalizer.py
+|   +-- test_vector_search.py
++-- src/
+|   +-- FHIR/
+|       +-- Snapshot/
+|           +-- EmbeddedPythonDemo.cls
 +-- docs/
 |   +-- day1_fhir_setup.md
 |   +-- demo_script.md
@@ -308,6 +318,20 @@ Then open `http://localhost:8501`.
 ## IPM / ZPM Metadata
 
 This repository includes `module.xml` with package metadata for InterSystems Package Manager / ZPM-oriented review. The application runtime remains the Python/Streamlit agent plus the InterSystems IRIS for Health FHIR Server setup described above.
+
+## Vector Search
+
+The Streamlit UI includes source context vector search over normalized patient snapshot sections. It vectorizes section text with token-frequency vectors and ranks matching sections using cosine similarity, allowing quick lookup across medications, allergies, observations, encounters, care plans, and missing information.
+
+## Embedded Python
+
+The repository includes `src/FHIR/Snapshot/EmbeddedPythonDemo.cls`, an IRIS-compatible ObjectScript class with an Embedded Python method:
+
+```objectscript
+ClassMethod NormalizeObservationValue(value As %String) As %String [ Language = python ]
+```
+
+This demo method extracts a numeric value from an observation string and is included as an InterSystems Embedded Python artifact for package review.
 
 Sample output: `docs/sample_patient_1_llm_summary.md`
 

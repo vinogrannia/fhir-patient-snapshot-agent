@@ -17,6 +17,7 @@
       <FileCopy Name="render.yaml" Target="${cspdir}/fhir-patient-snapshot-agent/render.yaml"/>
       <FileCopy Name="app" Target="${cspdir}/fhir-patient-snapshot-agent/app"/>
       <FileCopy Name="docs" Target="${cspdir}/fhir-patient-snapshot-agent/docs"/>
+      <FileCopy Name="src" Target="${cspdir}/fhir-patient-snapshot-agent/src"/>
     </Module>
   </Document>
 </Export>
