@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 from typing import Literal
 
+import pandas as pd
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -101,6 +102,7 @@ def main() -> None:
         return
 
     _render_context_metrics(result.context)
+    _render_observation_visuals(result.context)
     if demo_mode:
         st.caption("Online demo mode: bundled Patient 1 context from the local IRIS for Health FHIR Server demo setup.")
     if mode in {"prompt", "llm"}:
@@ -180,6 +182,37 @@ def _render_context_metrics(context: PatientSnapshotContext) -> None:
     cols[4].metric("Recent Observations", len(context.recent_observations))
     cols[5].metric("Recent Encounters", len(context.recent_encounters))
     cols[6].metric("Care Plans", len(context.care_plans))
+
+
+def _render_observation_visuals(context: PatientSnapshotContext) -> None:
+    rows = []
+    for observation in context.recent_observations:
+        value = _first_numeric_value(observation.value)
+        if value is None:
+            continue
+        rows.append(
+            {
+                "metric": observation.name,
+                "value": value,
+                "category": observation.category,
+                "date": observation.effective[:10],
+            }
+        )
+
+    if not rows:
+        return
+
+    st.subheader("Observation Visuals")
+    st.caption("Numeric values from recent FHIR Observation resources.")
+    chart_data = pd.DataFrame(rows)
+    st.bar_chart(chart_data, x="metric", y="value", color="category")
+
+
+def _first_numeric_value(text: str) -> float | None:
+    match = re.search(r"-?\d+(?:\.\d+)?", text)
+    if not match:
+        return None
+    return float(match.group(0))
 
 
 def _agent_mode(mode_label: str) -> UiMode:

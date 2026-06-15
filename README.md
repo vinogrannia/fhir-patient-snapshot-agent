@@ -93,6 +93,7 @@ The prompt also requests Markdown headings, bullet lists, blank lines between se
 - Prompt rules for readable Markdown output and source-data checks limited to data-quality/source-grounding facts
 - UI cleanup that keeps FHIR resource IDs out of the narrative summary while preserving them in source review
 - Streamlit web UI for patient ID entry, summary display, and collapsible source-resource review
+- Observation visuals for numeric FHIR Observation values in the Streamlit UI
 - Unit tests for normalisation and LLM response parsing
 - Sample LLM output for Patient `1`
 
@@ -101,6 +102,7 @@ The prompt also requests Markdown headings, bullet lists, blank lines between se
 This project is designed to align closely with the InterSystems AI Agents and FHIR Programming Contest goals:
 
 - Suggested task fit: implements the Smart Patient Summary Generator / FHIR Patient Snapshot Agent idea from the contest prompt.
+- Developer Community Idea fit: includes observation visuals related to DPI-I-388, "Custom Visualizations for Physicians": https://ideas.intersystems.com/ideas/DPI-I-388
 - InterSystems usage: uses InterSystems IRIS for Health as the local FHIR R4 server and source system for patient resources.
 - AI usage: calls an LLM through Nebius Token Factory using an OpenAI-compatible chat completions API.
 - Model used: `meta-llama/Llama-3.3-70B-Instruct`.
