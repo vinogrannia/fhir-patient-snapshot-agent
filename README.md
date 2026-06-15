@@ -106,6 +106,7 @@ This project is designed to align closely with the InterSystems AI Agents and FH
 - Model used: `meta-llama/Llama-3.3-70B-Instruct`.
 - Docker usage: Docker is used in two places: the local InterSystems IRIS for Health FHIR Server runs through the external InterSystems community FHIR template, and this repository includes a Dockerfile plus `docker-compose.demo.yml` for running the Python/Streamlit online demo mode.
 - Demo readiness: includes screenshots, sample output, a demo script, a YouTube video walkthrough, and a hosted online demo of the working app.
+- Developer Community article: https://community.intersystems.com/post/building-fhir-patient-snapshot-agent-iris-health-streamlit-and-llm
 - Documentation feedback: reported a FHIR template README improvement suggestion for authenticated FHIR API verification examples: https://github.com/intersystems-community/iris-fhir-template/issues/37
 - First-time contribution: structured as a clear, beginner-friendly open-source contest submission with setup steps, safety framing, tests, and reproducible local commands.
 
@@ -116,6 +117,8 @@ The current demo uses Patient `1` from the local InterSystems IRIS for Health FH
 YouTube video demo: https://youtu.be/Hsu10Nnujng
 
 Online demo: https://fhir-patient-snapshot-agent.onrender.com/
+
+Developer Community article: https://community.intersystems.com/post/building-fhir-patient-snapshot-agent-iris-health-streamlit-and-llm
 
 Online demo deployment is supported through `render.yaml`. For public hosting, set `ONLINE_DEMO_MODE=1`. In this mode the Streamlit app uses a bundled Patient `1` demo context captured from the local IRIS for Health FHIR Server setup, so the public app does not need access to a local `localhost` FHIR endpoint or a private LLM API key. The full live FHIR workflow still runs locally against InterSystems IRIS for Health as described below.
 
@@ -302,7 +305,9 @@ Sample output: `docs/sample_patient_1_llm_summary.md`
 
 Demo walkthrough: `docs/demo_script.md`
 
-Developer Community article draft: `docs/developer_community_article.md`
+Developer Community article: https://community.intersystems.com/post/building-fhir-patient-snapshot-agent-iris-health-streamlit-and-llm
+
+Article draft: `docs/developer_community_article.md`
 
 ## Tests
 
