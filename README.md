@@ -107,7 +107,7 @@ This project is designed to align closely with the InterSystems AI Agents and FH
 - Developer Community Idea fit: includes observation visuals related to DPI-I-388, "Custom Visualizations for Physicians": https://ideas.intersystems.com/ideas/DPI-I-388
 - InterSystems usage: uses InterSystems IRIS for Health as the local FHIR R4 server and source system for patient resources.
 - Vector Search usage: includes source context vector search over normalized patient snapshot sections in the Streamlit UI.
-- Embedded Python usage: includes `src/FHIR/Snapshot/EmbeddedPythonDemo.cls`, an IRIS class with an Embedded Python method for extracting numeric observation values.
+- Embedded Python usage: includes IRIS classes with Embedded Python methods for extracting numeric observation values and computing vector-search cosine similarity.
 - AI usage: calls an LLM through Nebius Token Factory using an OpenAI-compatible chat completions API.
 - Model used: `meta-llama/Llama-3.3-70B-Instruct`.
 - Docker usage: Docker is used in two places: the local InterSystems IRIS for Health FHIR Server runs through the external InterSystems community FHIR template, and this repository includes a Dockerfile plus `docker-compose.demo.yml` for running the Python/Streamlit online demo mode.
@@ -171,7 +171,9 @@ The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary au
 |   +-- FHIR/
 |       +-- Snapshot/
 |           +-- EmbeddedPythonDemo.cls
+|           +-- EmbeddedVectorSearch.cls
 +-- docs/
+|   +-- bonus_validation.md
 |   +-- day1_fhir_setup.md
 |   +-- demo_script.md
 |   +-- developer_community_article.md
@@ -319,19 +321,23 @@ Then open `http://localhost:8501`.
 
 This repository includes `module.xml` with package metadata for InterSystems Package Manager / ZPM-oriented review. The application runtime remains the Python/Streamlit agent plus the InterSystems IRIS for Health FHIR Server setup described above.
 
+Bonus validation notes: `docs/bonus_validation.md`
+
 ## Vector Search
 
 The Streamlit UI includes source context vector search over normalized patient snapshot sections. It vectorizes section text with token-frequency vectors and ranks matching sections using cosine similarity, allowing quick lookup across medications, allergies, observations, encounters, care plans, and missing information.
 
 ## Embedded Python
 
-The repository includes `src/FHIR/Snapshot/EmbeddedPythonDemo.cls`, an IRIS-compatible ObjectScript class with an Embedded Python method:
+The repository includes IRIS-compatible ObjectScript classes with Embedded Python methods:
 
 ```objectscript
 ClassMethod NormalizeObservationValue(value As %String) As %String [ Language = python ]
+ClassMethod Vectorize(text As %String) As %String [ Language = python ]
+ClassMethod CosineSimilarity(leftVectorJson As %String, rightVectorJson As %String) As %String [ Language = python ]
 ```
 
-This demo method extracts a numeric value from an observation string and is included as an InterSystems Embedded Python artifact for package review.
+These demo methods extract numeric observation values, create token-frequency vectors, and compute cosine similarity inside Embedded Python. They are included as InterSystems Embedded Python artifacts for package review.
 
 Sample output: `docs/sample_patient_1_llm_summary.md`
 
