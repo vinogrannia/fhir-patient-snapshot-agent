@@ -107,6 +107,7 @@ This project is designed to align closely with the InterSystems AI Agents and FH
 - AI usage: calls an LLM through Nebius Token Factory using an OpenAI-compatible chat completions API.
 - Model used: `meta-llama/Llama-3.3-70B-Instruct`.
 - Docker usage: Docker is used in two places: the local InterSystems IRIS for Health FHIR Server runs through the external InterSystems community FHIR template, and this repository includes a Dockerfile plus `docker-compose.demo.yml` for running the Python/Streamlit online demo mode.
+- IPM/ZPM metadata: includes `module.xml` with package metadata and file-copy entries for the demo assets.
 - Demo readiness: includes screenshots, sample output, a demo script, a YouTube video walkthrough, and a hosted online demo of the working app.
 - Developer Community article: https://community.intersystems.com/post/building-fhir-patient-snapshot-agent-iris-health-streamlit-and-llm
 - Documentation feedback: reported a FHIR template README improvement suggestion for authenticated FHIR API verification examples: https://github.com/intersystems-community/iris-fhir-template/issues/37
@@ -175,6 +176,7 @@ The Streamlit UI allows a user to enter a FHIR patient ID, choose the summary au
 +-- Dockerfile
 +-- README.md
 +-- docker-compose.demo.yml
++-- module.xml
 +-- render.yaml
 +-- requirements.txt
 ```
@@ -302,6 +304,10 @@ docker compose -f docker-compose.demo.yml up --build
 ```
 
 Then open `http://localhost:8501`.
+
+## IPM / ZPM Metadata
+
+This repository includes `module.xml` with package metadata for InterSystems Package Manager / ZPM-oriented review. The application runtime remains the Python/Streamlit agent plus the InterSystems IRIS for Health FHIR Server setup described above.
 
 Sample output: `docs/sample_patient_1_llm_summary.md`
 

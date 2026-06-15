@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+  <Document name="fhir-patient-snapshot-agent.ZPM">
+    <Module>
+      <Name>fhir-patient-snapshot-agent</Name>
+      <Version>0.1.0</Version>
+      <Packaging>module</Packaging>
+      <SourcesRoot>.</SourcesRoot>
+      <Description>FHIR Patient Snapshot Agent demo package metadata for the InterSystems AI Agents and FHIR Programming Contest.</Description>
+      <Keywords>FHIR,IRIS for Health,AI,LLM,Streamlit,Python</Keywords>
+      <Homepage>https://github.com/vinogrannia/fhir-patient-snapshot-agent</Homepage>
+      <License>MIT</License>
+      <FileCopy Name="README.md" Target="${cspdir}/fhir-patient-snapshot-agent/README.md"/>
+      <FileCopy Name="requirements.txt" Target="${cspdir}/fhir-patient-snapshot-agent/requirements.txt"/>
+      <FileCopy Name="Dockerfile" Target="${cspdir}/fhir-patient-snapshot-agent/Dockerfile"/>
+      <FileCopy Name="docker-compose.demo.yml" Target="${cspdir}/fhir-patient-snapshot-agent/docker-compose.demo.yml"/>
+      <FileCopy Name="render.yaml" Target="${cspdir}/fhir-patient-snapshot-agent/render.yaml"/>
+      <FileCopy Name="app" Target="${cspdir}/fhir-patient-snapshot-agent/app"/>
+      <FileCopy Name="docs" Target="${cspdir}/fhir-patient-snapshot-agent/docs"/>
+    </Module>
+  </Document>
+</Export>
